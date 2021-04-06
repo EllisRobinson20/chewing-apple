@@ -1,0 +1,57 @@
+[
+	{	"id" : 1,
+		"name" : "bicep curl",
+		"resistanceIndex" : [5,1,1,0],
+		"tutorial" : "foldername/FILENAME.ext",
+        "selected" : true
+	},
+	{
+		"id" : 2,
+		"name" : "upright row",
+		"resistanceIndex" : [3,1,1,0],
+		"tutorial" : "foldername/FILENAME.ext",
+        "selected" : true
+	},
+	{	
+		"id" : 3,
+		"name" : "inclinced bench press",
+		"resistanceIndex" : [1,3,1,0],
+		"tutorial" : "foldername/FILENAME.ext",
+        "selected" : true
+	},
+	{
+		"id" : 4,
+		"name" : "bench press",
+		"resistanceIndex" : [1,5,1,0],
+		"tutorial" : "foldername/FILENAME.ext",
+        "selected" : true
+	},
+	{
+		"id" : 5,
+		"name" : "weighted crunches",
+		"resistanceIndex" : [1,1,5,1],
+		"tutorial" : "foldername/FILENAME.ext",
+        "selected" : true
+	},
+	{
+		"id" : 6,
+		"name" : "weighted russian twists",
+		"resistanceIndex" : [2,1,5,1],
+		"tutorial" : "foldername/FILENAME.ext",
+        "selected" : true
+	},
+	{
+		"id" : 7,
+		"name" : "standing squat",
+		"resistanceIndex" : [1,1,1,5],
+		"tutorial" : "foldername/FILENAME.ext",
+        "selected" : true
+	},
+	{
+		"id" : 8,
+		"name" : " bulgarian split squat",
+		"resistanceIndex" : [1,1,1,5],
+		"tutorial" : "foldername/FILENAME.ext",
+        "selected" : true
+	}
+]

@@ -1,0 +1,38 @@
+[
+	{
+        "id" : 1,
+		"targetName" : "Strength",
+		"repAmount" : [3,5],
+		"interval" : [120,360],
+		"speed" : "moderate",
+		"oneRepMax" : [80,85],
+		"targetSets" : [4,7]
+	},
+	{
+        "id" : 2,
+		"targetName" : "Power",
+		"repAmount" : [3,5],
+		"interval" : [120,360],
+		"speed" : "fast",
+		"oneRepMax" : [45,60],
+		"targetSets" : [3,5]
+	},
+	{
+        "id" : 3,
+		"targetName" : "Volume",
+		"repAmount" : [6,12],
+		"interval" : [120,180],
+		"speed" : "moderate",
+		"oneRepMax" : [60,80],
+		"targetSets" : [4,8]
+	},
+	{
+        "id" : 4,
+		"targetName" : "Endurance",
+		"repAmount" : [6,12],
+		"interval" : [120,120],
+		"speed" : "moderate",
+		"oneRepMax" : [40,60],
+		"targetSets" : [2,4]
+	}
+]

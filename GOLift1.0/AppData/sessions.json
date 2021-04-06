@@ -1,0 +1,22 @@
+[
+	{
+    "id" : 0,
+	"muscleName" : "Biceps",
+	"muscleIndexPosition" : 0
+	},
+	{
+    "id" : 1,
+	"muscleName" : "Pectorals",
+	"muscleIndexPosition" : 1
+	},
+	{
+    "id" : 2,
+	"muscleName" : "Abdominals",
+	"muscleIndexPosition" : 2
+	},
+	{
+    "id" : 3,
+	"muscleName" : "Quadriceps",
+	"muscleIndexPosition" : 3
+	}
+]

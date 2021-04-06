@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "53B64D87-84F1-4800-8F1D-911F4FF7B0EE"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EFFA7C96-CB23-49DC-AE02-DE87572A0AC2"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GOLift1.0/ContentView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "119"
+            endingLineNumber = "119"
+            landmarkName = "body"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "EFFA7C96-CB23-49DC-AE02-DE87572A0AC2 - 5b5061802021c4e4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "GOLift1_0.ContentView.body.getter : some"
+                  moduleName = "GOLift1.0"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lee/mobile_ios/GOLift1.0/GOLift1.0/ContentView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "26"
+                  endingLineNumber = "26"
+                  offsetFromSymbolStart = "299">
+               </Location>
+               <Location
+                  uuid = "EFFA7C96-CB23-49DC-AE02-DE87572A0AC2 - 5f90406e585a35f1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; SwiftUI.TupleView&lt;(SwiftUI.Text, &lt;&lt;opaque return type of (extension in SwiftUI):SwiftUI.View.buttonStyle&lt;A where A1: SwiftUI.ButtonStyle&gt;(A1) -&gt; some&gt;&gt;.0, &lt;&lt;opaque return type of (extension in SwiftUI):SwiftUI.View.foregroundColor(Swift.Optional&lt;SwiftUI.Color&gt;) -&gt; some&gt;&gt;.0, SwiftUI.Spacer, SwiftUI.HStack&lt;SwiftUI.TupleView&lt;(SwiftUI.Button&lt;SwiftUI.Image&gt;, SwiftUI.Text, SwiftUI.Text, SwiftUI.Button&lt;SwiftUI.Image&gt;)&gt;&gt;, SwiftUI.Spacer)&gt; in GOLift1_0.ContentView.body.getter : some"
+                  moduleName = "GOLift1.0"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lee/mobile_ios/GOLift1.0/GOLift1.0/ContentView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "27"
+                  endingLineNumber = "27"
+                  offsetFromSymbolStart = "700">
+               </Location>
+               <Location
+                  uuid = "EFFA7C96-CB23-49DC-AE02-DE87572A0AC2 - 5f90406e585a3592"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; SwiftUI.TupleView&lt;(SwiftUI.Text, &lt;&lt;opaque return type of (extension in SwiftUI):SwiftUI.View.buttonStyle&lt;A where A1: SwiftUI.ButtonStyle&gt;(A1) -&gt; some&gt;&gt;.0, &lt;&lt;opaque return type of (extension in SwiftUI):SwiftUI.View.foregroundColor(Swift.Optional&lt;SwiftUI.Color&gt;) -&gt; some&gt;&gt;.0, SwiftUI.Spacer, SwiftUI.HStack&lt;SwiftUI.TupleView&lt;(SwiftUI.Button&lt;SwiftUI.Image&gt;, SwiftUI.Text, SwiftUI.Text, SwiftUI.Button&lt;SwiftUI.Image&gt;)&gt;&gt;, SwiftUI.Spacer)&gt; in GOLift1_0.ContentView.body.getter : some"
+                  moduleName = "GOLift1.0"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lee/mobile_ios/GOLift1.0/GOLift1.0/ContentView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "26"
+                  endingLineNumber = "26"
+                  offsetFromSymbolStart = "4806">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
