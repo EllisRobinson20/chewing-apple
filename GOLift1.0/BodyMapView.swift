@@ -118,7 +118,11 @@ struct BodyMapView: View {
         }
         return bool!
     }
-    
+    //o think here in this method somthing is not working right as the array still appends two names
+    // what may be the case is that these mathods such as check state main view
+    // are not calling save so below ultimately the array gets wiped and replaced with the same default array each time
+    //this means that there is no need to do the manual work with removing items from array
+    // the view contaext just needs to be saved. wonder if woul do this on navigate away from the popup? or each time the check mark is changed
     func startSession() {
         helper.clearSession()
         for exercise in appData.exercises.exerciseList {
@@ -279,6 +283,7 @@ class Helper: ObservableObject {
 }
 //Handles options view
 struct FullScreenModalView: View {
+    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) var presentationMode
     // app data
     @EnvironmentObject var appData: AppData
@@ -290,11 +295,17 @@ struct FullScreenModalView: View {
     private var activitiesDB: FetchedResults<Activity>
     @FetchRequest(sortDescriptors: [])
     private var exerciseDB: FetchedResults<ExerciseState>
+    
     func changeState(name: String) {
         for exercise in exerciseDB {
             if name == exercise.name {
                 exercise.isAdded = !exercise.isAdded
-                
+                do {
+                    try viewContext.save()
+                } catch {
+                    let error = error as NSError
+                    fatalError("Unresolved Error: \(error)")
+                }
             }
         }
     }
