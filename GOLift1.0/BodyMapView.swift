@@ -1,9 +1,3 @@
-//
-//  BodyMapView.swift
-//  GOLift1.0
-//
-//  Created by L EE on 28/03/2021.
-//
 
 import SwiftUI
 import SceneKit

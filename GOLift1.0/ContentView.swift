@@ -1,9 +1,3 @@
-//
-//  ContentView.swift
-//  GOLift1.0
-//
-//  Created by L EE on 28/03/2021.
-//
 
 import SwiftUI
 import CoreData
@@ -54,7 +48,7 @@ struct ContentView: View {
         }
     }
     //
-    var myWorkout = [String]()
+    
     
     func setRepMax(chosenExercise: String, maxKG: Float, repsCount: Int) {
         // calc the rep max on chosen activity
@@ -75,7 +69,7 @@ struct ContentView: View {
             let oneRepMax = maxKG / (1.0278 - 0.0278 * Float(repsCount) )
         if  activityList.contains(chosenExercise) { // this is not creating a new entity!!!!
                 //
-                print("Setting rep max2")
+                print("Setting existing activity")
                 for activity in activities {
                     print("TWO")
                 if helper.userSession.contains( chosenExercise ) {
@@ -86,7 +80,7 @@ struct ContentView: View {
                     print(activity.oneRepMax)
                 }
             } else {
-                print("Setting rep max3")
+                print("Creating new activity")
                 
                 if helper.userSession.contains( chosenExercise ) {
                     let newActivity = Activity(context: viewContext)
@@ -173,11 +167,23 @@ struct ContentView: View {
         return true
     }
     
+    
+    func getCurrentWeight() -> String {
+        let targets = self.getTargets()
+        var workout = Workout()
+        // Modify the current target first using workout.targetView()
+        let weightToLift = workout.targetView(target: targets[currentTarget], activityName: helper.userSession[currentExercise], textNode: "kg")
+        if !weightToLift.isEmpty {
+            currentWeight = Int(weightToLift)!
+        }
+        return String(currentWeight)
+    }
+    
     var body: some View {
         let targets = self.getTargets()
         Spacer()
         HStack{
-            
+            /// Back Button: Content View
             Button(action: {
                 withAnimation  {viewRouter.currentPage = .page1}
             }) {
@@ -235,7 +241,7 @@ struct ContentView: View {
             // Weight to Lift
             HStack{
                 Button(action: {increment(incrementUp: false, controlName: "weight")}) { Image(systemName: "chevron.backward") }
-                Text("\(self.currentWeight)")
+                Text("\(self.getCurrentWeight())")
                     .font(.largeTitle)
                     .bold()
             

@@ -1,15 +1,12 @@
-//
-//  GOLift1_0App.swift
-//  GOLift1.0
-//
-//  Created by L EE on 28/03/2021.
-//
+
 
 import SwiftUI
 @main
 struct GOLift1_0App: App {
     let persistenceController = PersistenceController.shared
     @Environment(\.scenePhase) var scenePhase
+    
+    
     
     @StateObject var viewRouter = ViewRouter()
     

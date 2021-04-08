@@ -5,7 +5,7 @@
         <attribute name="estTenRepsKG" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="exerciseName" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="improvementIndex" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="improvementIndex" optional="YES" attributeType="Float" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="oneRepMax" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
     <entity name="ExerciseState" representedClassName="ExerciseState" syncable="YES" codeGenerationType="class">
@@ -16,7 +16,7 @@
     <entity name="Feedback" representedClassName="Feedback" syncable="YES" codeGenerationType="class"/>
     <entity name="History" representedClassName="History" syncable="YES" codeGenerationType="class">
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="exerciseId" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="exerciseName" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="repsAchieved" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <attribute name="targetName" optional="YES" attributeType="String"/>
