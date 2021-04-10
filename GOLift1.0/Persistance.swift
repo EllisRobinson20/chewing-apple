@@ -1,4 +1,5 @@
 import CoreData
+import SwiftUI
 
 struct PersistenceController {
     // A singleton for our entire app to use
@@ -11,7 +12,7 @@ struct PersistenceController {
     // A test configuration for SwiftUI previews
     static var preview: PersistenceController = {
         let controller = PersistenceController(inMemory: true)
-
+        print("persistence contoller code")
         // Create 10 example programming languages.
         for i in 0..<AppData().exercises.exerciseList.count {
             let newEntry = ExerciseState(context: controller.container.viewContext)
@@ -48,8 +49,14 @@ struct PersistenceController {
             do {
                 try context.save()
             } catch {
-                // Show some error here
+                print(error)
             }
         }
     }
+    
+    func delete(object: NSManagedObject) {
+        container.viewContext.delete(object)
+        save()
+    }
+    
 }

@@ -8,6 +8,8 @@ struct Workout{
    
     @FetchRequest(sortDescriptors: [])
     private var activities: FetchedResults<Activity>
+    @FetchRequest(sortDescriptors: [])
+    private var ex: FetchedResults<ExerciseState>
     
     //get these from rep max and the selected target
     var targetKG: Float = 0
@@ -28,10 +30,21 @@ struct Workout{
     
     mutating func targetView(target: String, activityName: String, textNode: String) -> String {
         var res: String = ""
-        let historyResult = FilteredHistory(filterExercise: activityName, filterTarget: target).get()
+        let historyResult = FilteredHistory(filterExercise: activityName, filterTarget: target)
+            .get()
+        // if this history result is nil
+        if historyResult.first?.targetName == nil {
+            //set values in activity
+            
+          // here the filters are producing nil ??????
+        }
+        
+        
         //get the activity
+        print("Testing for the result of targetView in Workout.targetView(): \(historyResult.first?.targetName)")
         for activity in activities {
             if activity.exerciseName == activityName {
+                
                 currentRepMax = activity.oneRepMax
                 
                 let targetObj = self.getTargetObj(name: target)
@@ -46,7 +59,7 @@ struct Workout{
         }
         return res
     }
-    private mutating func getTargetObj(name: String) -> Target? {
+    mutating func getTargetObj(name: String) -> Target? {
         var targetObj: Target?
         for target in AppData().targets.targetsList {
             if target.targetName == name {
@@ -60,11 +73,11 @@ struct Workout{
         switch forNode {
         case "kg":
             // if rep max bigger than index
-            if currentActivity.oneRepMax > currentActivity.improvementIndex && currentActivity.improvementIndex > 0 {
+            if Int16(currentActivity.oneRepMax) > currentActivity.improvementIndex && currentActivity.improvementIndex > 0 {
                 targetKG = currentActivity.oneRepMax * (Float(targetObj.oneRepMax[0])  / 100)
             }else
-            if currentActivity.improvementIndex >= currentActivity.oneRepMax {
-                targetKG = currentActivity.improvementIndex * (Float(targetObj.oneRepMax[0])  / 100)
+            if currentActivity.improvementIndex >= Int16(currentActivity.oneRepMax) {
+                targetKG = Float(currentActivity.improvementIndex) * (Float(targetObj.oneRepMax[0])  / 100)
             }
             result = String(targetKG)
         //if index bigger than rep max

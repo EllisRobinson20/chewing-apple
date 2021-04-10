@@ -4,7 +4,7 @@ import CoreData
 
 
 struct ContentView: View {
-    @State var currentExercise = 0
+    @State var currentExercise = 1
     @EnvironmentObject var viewRouter: ViewRouter
     @Environment(\.managedObjectContext) private var viewContext
     
@@ -13,9 +13,7 @@ struct ContentView: View {
     
     
     @StateObject var appData = AppData()
-    //var targets: []
-@FetchRequest(sortDescriptors: [])
-    private var exerciseStateDB: FetchedResults<ExerciseState>
+
     /// Get exercise targets
     func getTargets() -> [String] {
         var arr = [" "]
@@ -25,20 +23,7 @@ struct ContentView: View {
         }
         return arr
     }
-    
-    /// TODO: this initialisation may  need to change to the other view as the default view may change to body map
-    func initDB() {
-        if exerciseStateDB.isEmpty {
-            
-            for i in 0..<appData.exercises.exerciseList.count {
-                let newEntry = ExerciseState(context: viewContext)
-                newEntry.id = Int16(i)
-                newEntry.isAdded = true
-                newEntry.name = appData.exercises.exerciseList[i].name
-                saveDB()
-            }
-        }
-    }
+//
     func saveDB() {
         do {
             try viewContext.save()
@@ -47,10 +32,13 @@ struct ContentView: View {
             fatalError("Unresolved Error: \(error)")
         }
     }
-    //
-    
-    
+//
     func setRepMax(chosenExercise: String, maxKG: Float, repsCount: Int) {
+       
+//        let targets = self.getTargets()
+//        let activityResult = FilteredActivity(filterExercise: helper.userSession[currentExercise], filterTarget: targets[currentTarget])
+//            .get()
+        
         // calc the rep max on chosen activity
         // check activites db for previous entries
         //then compare them
@@ -61,32 +49,33 @@ struct ContentView: View {
         var activityList = [" "]
         activityList.removeAll()
         for activity in activities {
+            // !This for loop forcing the each activity USE new Filter
             if activity.exerciseName == chosenExercise {
                 activityList.append(chosenExercise)
             }
         }
         
+        
             let oneRepMax = maxKG / (1.0278 - 0.0278 * Float(repsCount) )
-        if  activityList.contains(chosenExercise) { // this is not creating a new entity!!!!
-                //
+        if  activityList.contains(chosenExercise) {
                 print("Setting existing activity")
                 for activity in activities {
-                    print("TWO")
+                    print("Has Activities")
                 if helper.userSession.contains( chosenExercise ) {
                 activity.oneRepMax = oneRepMax
-                self.saveDB() //make sure one rep max saves even though estTenReps does so automatically
+                    PersistenceController.shared.save()
                 estTenRepKG(repMax: oneRepMax, activity: activity)
                 }
-                    print(activity.oneRepMax)
+                    print("new repmax:  \(activity.oneRepMax)")
                 }
             } else {
                 print("Creating new activity")
-                
                 if helper.userSession.contains( chosenExercise ) {
+                    print("Connected to sessions.json...")
                     let newActivity = Activity(context: viewContext)
                     newActivity.exerciseName = chosenExercise
                 newActivity.oneRepMax = oneRepMax
-                    self.saveDB() //make sure one rep max saves
+                    PersistenceController.shared.save()
                 estTenRepKG(repMax: oneRepMax, activity: newActivity)
                 }
             }
@@ -180,7 +169,12 @@ struct ContentView: View {
     }
     
     var body: some View {
+        
         let targets = self.getTargets()
+//        DynamicText(filterKey: "exerciseName", filterValue: helper.userSession[currentExercise]) { (activity: Activity) in
+//            Text("\(activity.exerciseName ?? "")\(activity.oneRepMax)")
+//        }
+        DynamicText(target: targets[currentTarget], activityName: "standing squat", textNode: "kg")
         Spacer()
         HStack{
             /// Back Button: Content View
@@ -241,7 +235,7 @@ struct ContentView: View {
             // Weight to Lift
             HStack{
                 Button(action: {increment(incrementUp: false, controlName: "weight")}) { Image(systemName: "chevron.backward") }
-                Text("\(self.getCurrentWeight())")
+                Text("\(self.currentWeight)")
                     .font(.largeTitle)
                     .bold()
             
@@ -306,10 +300,10 @@ struct ContentView: View {
             }
             .scaleEffect(0.7)
             Spacer()
-        }.onAppear() {initDB()}
-        .onAppear() {
+        }.onAppear() {
             
         }
+        
     }
 }
 

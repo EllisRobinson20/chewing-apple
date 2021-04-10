@@ -294,12 +294,7 @@ struct FullScreenModalView: View {
         for exercise in exerciseDB {
             if name == exercise.name {
                 exercise.isAdded = !exercise.isAdded
-                do {
-                    try viewContext.save()
-                } catch {
-                    let error = error as NSError
-                    fatalError("Unresolved Error: \(error)")
-                }
+                PersistenceController.shared.save()
             }
         }
     }

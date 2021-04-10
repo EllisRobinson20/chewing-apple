@@ -20,6 +20,19 @@
 		9B4BFF37261BCFEB00CA003F /* Workout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF36261BCFEB00CA003F /* Workout.swift */; };
 		9B4BFF3A261E14E200CA003F /* FilteredHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF39261E14E200CA003F /* FilteredHistory.swift */; };
 		9B4BFF3D261E2E2A00CA003F /* HistoryArrayValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF3C261E2E2A00CA003F /* HistoryArrayValueTransformer.swift */; };
+		9B4BFF40261F39C300CA003F /* FilteredActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF3F261F39C300CA003F /* FilteredActivity.swift */; };
+		9B4BFF48261FD01D00CA003F /* FilteredUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF47261FD01D00CA003F /* FilteredUIView.swift */; };
+		9B4BFF4C26204BD900CA003F /* FilteredExerciseSate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF4B26204BD900CA003F /* FilteredExerciseSate.swift */; };
+		9B4BFF4F2620577800CA003F /* AllActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF4E2620577800CA003F /* AllActivity.swift */; };
+		9B4BFF5E262099AD00CA003F /* ExerciseState+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF56262099AD00CA003F /* ExerciseState+CoreDataClass.swift */; };
+		9B4BFF5F262099AD00CA003F /* ExerciseState+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF57262099AD00CA003F /* ExerciseState+CoreDataProperties.swift */; };
+		9B4BFF60262099AD00CA003F /* Activity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF58262099AD00CA003F /* Activity+CoreDataClass.swift */; };
+		9B4BFF61262099AD00CA003F /* Activity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF59262099AD00CA003F /* Activity+CoreDataProperties.swift */; };
+		9B4BFF62262099AD00CA003F /* History+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF5A262099AD00CA003F /* History+CoreDataClass.swift */; };
+		9B4BFF63262099AD00CA003F /* History+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF5B262099AD00CA003F /* History+CoreDataProperties.swift */; };
+		9B4BFF64262099AD00CA003F /* Feedback+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF5C262099AD00CA003F /* Feedback+CoreDataClass.swift */; };
+		9B4BFF65262099AD00CA003F /* Feedback+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF5D262099AD00CA003F /* Feedback+CoreDataProperties.swift */; };
+		9B4BFF692620B31600CA003F /* DynamicText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF682620B31600CA003F /* DynamicText.swift */; };
 		9B54063E26167A33007EF863 /* Persistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B54063D26167A33007EF863 /* Persistance.swift */; };
 		9B64CE9B2617E0DE008D7E95 /* sessions.json in Resources */ = {isa = PBXBuildFile; fileRef = 9B64CE9A2617E0DE008D7E95 /* sessions.json */; };
 		9B64CE9E2617E3EF008D7E95 /* exercises.json in Resources */ = {isa = PBXBuildFile; fileRef = 9B64CE9D2617E3EF008D7E95 /* exercises.json */; };
@@ -48,6 +61,19 @@
 		9B4BFF36261BCFEB00CA003F /* Workout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Workout.swift; sourceTree = "<group>"; };
 		9B4BFF39261E14E200CA003F /* FilteredHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilteredHistory.swift; sourceTree = "<group>"; };
 		9B4BFF3C261E2E2A00CA003F /* HistoryArrayValueTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryArrayValueTransformer.swift; sourceTree = "<group>"; };
+		9B4BFF3F261F39C300CA003F /* FilteredActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilteredActivity.swift; sourceTree = "<group>"; };
+		9B4BFF47261FD01D00CA003F /* FilteredUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilteredUIView.swift; sourceTree = "<group>"; };
+		9B4BFF4B26204BD900CA003F /* FilteredExerciseSate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilteredExerciseSate.swift; sourceTree = "<group>"; };
+		9B4BFF4E2620577800CA003F /* AllActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllActivity.swift; sourceTree = "<group>"; };
+		9B4BFF56262099AD00CA003F /* ExerciseState+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "ExerciseState+CoreDataClass.swift"; path = "DataManager/ExerciseState+CoreDataClass.swift"; sourceTree = "<group>"; };
+		9B4BFF57262099AD00CA003F /* ExerciseState+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "ExerciseState+CoreDataProperties.swift"; path = "DataManager/ExerciseState+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		9B4BFF58262099AD00CA003F /* Activity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Activity+CoreDataClass.swift"; path = "DataManager/Activity+CoreDataClass.swift"; sourceTree = "<group>"; };
+		9B4BFF59262099AD00CA003F /* Activity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Activity+CoreDataProperties.swift"; path = "DataManager/Activity+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		9B4BFF5A262099AD00CA003F /* History+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "History+CoreDataClass.swift"; path = "DataManager/History+CoreDataClass.swift"; sourceTree = "<group>"; };
+		9B4BFF5B262099AD00CA003F /* History+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "History+CoreDataProperties.swift"; path = "DataManager/History+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		9B4BFF5C262099AD00CA003F /* Feedback+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Feedback+CoreDataClass.swift"; path = "DataManager/Feedback+CoreDataClass.swift"; sourceTree = "<group>"; };
+		9B4BFF5D262099AD00CA003F /* Feedback+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Feedback+CoreDataProperties.swift"; path = "DataManager/Feedback+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		9B4BFF682620B31600CA003F /* DynamicText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicText.swift; sourceTree = "<group>"; };
 		9B54063D26167A33007EF863 /* Persistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistance.swift; sourceTree = "<group>"; };
 		9B64CE9A2617E0DE008D7E95 /* sessions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sessions.json; sourceTree = "<group>"; };
 		9B64CE9D2617E3EF008D7E95 /* exercises.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = exercises.json; sourceTree = "<group>"; };
@@ -91,11 +117,14 @@
 			path = AppData;
 			sourceTree = "<group>";
 		};
-		9B4BFF32261BCA5100CA003F /* Routing */ = {
+		9B4BFF4A26204BC300CA003F /* Filters */ = {
 			isa = PBXGroup;
 			children = (
+				9B4BFF3F261F39C300CA003F /* FilteredActivity.swift */,
+				9B4BFF4E2620577800CA003F /* AllActivity.swift */,
+				9B4BFF4B26204BD900CA003F /* FilteredExerciseSate.swift */,
 			);
-			path = Routing;
+			path = Filters;
 			sourceTree = "<group>";
 		};
 		9BF5862C261017FB00C9ECAE = {
@@ -117,16 +146,25 @@
 		9BF58637261017FB00C9ECAE /* GOLift1.0 */ = {
 			isa = PBXGroup;
 			children = (
+				9BF58638261017FB00C9ECAE /* GOLift1_0App.swift */,
+				9BF5863A261017FB00C9ECAE /* ContentView.swift */,
+				9B784EF526111A4D0016DC6E /* BodyMapView.swift */,
+				9B4BFF56262099AD00CA003F /* ExerciseState+CoreDataClass.swift */,
+				9B4BFF57262099AD00CA003F /* ExerciseState+CoreDataProperties.swift */,
+				9B4BFF58262099AD00CA003F /* Activity+CoreDataClass.swift */,
+				9B4BFF59262099AD00CA003F /* Activity+CoreDataProperties.swift */,
+				9B4BFF5A262099AD00CA003F /* History+CoreDataClass.swift */,
+				9B4BFF5B262099AD00CA003F /* History+CoreDataProperties.swift */,
+				9B4BFF5C262099AD00CA003F /* Feedback+CoreDataClass.swift */,
+				9B4BFF5D262099AD00CA003F /* Feedback+CoreDataProperties.swift */,
 				9B4BFF24261B6A4100CA003F /* ViewRouter.swift */,
 				9B4BFF27261B6ADD00CA003F /* MotherView.swift */,
 				9B4BFF2A261B70DC00CA003F /* Pager.swift */,
-				9B4BFF32261BCA5100CA003F /* Routing */,
-				9BF58638261017FB00C9ECAE /* GOLift1_0App.swift */,
-				9BF5863A261017FB00C9ECAE /* ContentView.swift */,
+				9B4BFF4A26204BC300CA003F /* Filters */,
 				9B4BFF36261BCFEB00CA003F /* Workout.swift */,
+				9B4BFF47261FD01D00CA003F /* FilteredUIView.swift */,
 				9B4BFF3C261E2E2A00CA003F /* HistoryArrayValueTransformer.swift */,
 				9B4BFF39261E14E200CA003F /* FilteredHistory.swift */,
-				9B784EF526111A4D0016DC6E /* BodyMapView.swift */,
 				9BB5712826166A5E0008B3F8 /* Data.xcdatamodeld */,
 				9B47FAC42618F2AB00E1A2D2 /* AppData.swift */,
 				9B54063D26167A33007EF863 /* Persistance.swift */,
@@ -136,6 +174,7 @@
 				9BF5863C261017FC00C9ECAE /* Assets.xcassets */,
 				9BF58641261017FC00C9ECAE /* Info.plist */,
 				9BF5863E261017FC00C9ECAE /* Preview Content */,
+				9B4BFF682620B31600CA003F /* DynamicText.swift */,
 			);
 			path = GOLift1.0;
 			sourceTree = "<group>";
@@ -223,23 +262,36 @@
 			files = (
 				9B4BFF3D261E2E2A00CA003F /* HistoryArrayValueTransformer.swift in Sources */,
 				9B4BFF2B261B70DC00CA003F /* Pager.swift in Sources */,
+				9B4BFF64262099AD00CA003F /* Feedback+CoreDataClass.swift in Sources */,
 				9B4BFF25261B6A4100CA003F /* ViewRouter.swift in Sources */,
 				9B47FAC52618F2AB00E1A2D2 /* AppData.swift in Sources */,
+				9B4BFF63262099AD00CA003F /* History+CoreDataProperties.swift in Sources */,
 				9B4BFF3A261E14E200CA003F /* FilteredHistory.swift in Sources */,
 				9B54063E26167A33007EF863 /* Persistance.swift in Sources */,
+				9B4BFF4F2620577800CA003F /* AllActivity.swift in Sources */,
 				9B784EF626111A4D0016DC6E /* BodyMapView.swift in Sources */,
 				9B4BFF28261B6ADD00CA003F /* MotherView.swift in Sources */,
+				9B4BFF48261FD01D00CA003F /* FilteredUIView.swift in Sources */,
+				9B4BFF4C26204BD900CA003F /* FilteredExerciseSate.swift in Sources */,
+				9B4BFF5E262099AD00CA003F /* ExerciseState+CoreDataClass.swift in Sources */,
 				9BF5863B261017FB00C9ECAE /* ContentView.swift in Sources */,
+				9B4BFF40261F39C300CA003F /* FilteredActivity.swift in Sources */,
+				9B4BFF60262099AD00CA003F /* Activity+CoreDataClass.swift in Sources */,
 				9B47FABE2618F07B00E1A2D2 /* Sessions.swift in Sources */,
 				9B47FAB82618EDE900E1A2D2 /* Target.swift in Sources */,
+				9B4BFF5F262099AD00CA003F /* ExerciseState+CoreDataProperties.swift in Sources */,
 				9BF58639261017FB00C9ECAE /* GOLift1_0App.swift in Sources */,
 				9B47FAB52618ECEA00E1A2D2 /* Session.swift in Sources */,
+				9B4BFF692620B31600CA003F /* DynamicText.swift in Sources */,
 				9BB5712A26166A5E0008B3F8 /* Data.xcdatamodeld in Sources */,
 				9B47FABB2618EEC400E1A2D2 /* Exercises.swift in Sources */,
 				9B47FAB22618EBAB00E1A2D2 /* Exercise.swift in Sources */,
 				9B47FAC12618F1BF00E1A2D2 /* Targets.swift in Sources */,
+				9B4BFF62262099AD00CA003F /* History+CoreDataClass.swift in Sources */,
+				9B4BFF65262099AD00CA003F /* Feedback+CoreDataProperties.swift in Sources */,
 				9B4BFF37261BCFEB00CA003F /* Workout.swift in Sources */,
 				9BB570E026163C660008B3F8 /* Styles.swift in Sources */,
+				9B4BFF61262099AD00CA003F /* Activity+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
