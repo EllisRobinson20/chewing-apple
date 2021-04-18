@@ -12,13 +12,13 @@ class FilteredActivity: NSManagedObject, Identifiable {
 
 extension FilteredActivity {
     // ❇️ The @FetchRequest property wrapper in the ContentView will call this function
-    static func fetchOne(filterExercise: String, filterTarget: String) -> NSFetchRequest<Activity> {
+    static func fetchOne(filterExercise: String) -> NSFetchRequest<Activity> {
         let predicate1 = NSPredicate(format: "exerciseName == %@", "\(filterExercise)")
-        let predicate2 = NSPredicate(format: "targetName == %@", "\(filterTarget)")
+      
         let request: NSFetchRequest<Activity> = FilteredActivity.fetchRequest() as! NSFetchRequest<Activity>
         
         // ❇️ The @FetchRequest property wrapper in the ContentView requires a sort descriptor
-        request.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [predicate1,predicate2] )
+        request.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [predicate1] )
           
         return request
     }

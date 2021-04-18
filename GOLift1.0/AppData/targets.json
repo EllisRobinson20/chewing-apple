@@ -29,7 +29,7 @@
 	{
         "id" : 4,
 		"targetName" : "Endurance",
-		"repAmount" : [6,12],
+		"repAmount" : [16,30],
 		"interval" : [120,120],
 		"speed" : "moderate",
 		"oneRepMax" : [40,60],

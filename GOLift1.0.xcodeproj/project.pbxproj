@@ -33,6 +33,8 @@
 		9B4BFF64262099AD00CA003F /* Feedback+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF5C262099AD00CA003F /* Feedback+CoreDataClass.swift */; };
 		9B4BFF65262099AD00CA003F /* Feedback+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF5D262099AD00CA003F /* Feedback+CoreDataProperties.swift */; };
 		9B4BFF692620B31600CA003F /* DynamicText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF682620B31600CA003F /* DynamicText.swift */; };
+		9B4BFF7F262769D800CA003F /* FilteredTextWeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF7E262769D800CA003F /* FilteredTextWeight.swift */; };
+		9B4BFF82262908C700CA003F /* FilterKG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFF81262908C700CA003F /* FilterKG.swift */; };
 		9B54063E26167A33007EF863 /* Persistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B54063D26167A33007EF863 /* Persistance.swift */; };
 		9B64CE9B2617E0DE008D7E95 /* sessions.json in Resources */ = {isa = PBXBuildFile; fileRef = 9B64CE9A2617E0DE008D7E95 /* sessions.json */; };
 		9B64CE9E2617E3EF008D7E95 /* exercises.json in Resources */ = {isa = PBXBuildFile; fileRef = 9B64CE9D2617E3EF008D7E95 /* exercises.json */; };
@@ -74,6 +76,8 @@
 		9B4BFF5C262099AD00CA003F /* Feedback+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Feedback+CoreDataClass.swift"; path = "DataManager/Feedback+CoreDataClass.swift"; sourceTree = "<group>"; };
 		9B4BFF5D262099AD00CA003F /* Feedback+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Feedback+CoreDataProperties.swift"; path = "DataManager/Feedback+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		9B4BFF682620B31600CA003F /* DynamicText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicText.swift; sourceTree = "<group>"; };
+		9B4BFF7E262769D800CA003F /* FilteredTextWeight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilteredTextWeight.swift; sourceTree = "<group>"; };
+		9B4BFF81262908C700CA003F /* FilterKG.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterKG.swift; sourceTree = "<group>"; };
 		9B54063D26167A33007EF863 /* Persistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistance.swift; sourceTree = "<group>"; };
 		9B64CE9A2617E0DE008D7E95 /* sessions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sessions.json; sourceTree = "<group>"; };
 		9B64CE9D2617E3EF008D7E95 /* exercises.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = exercises.json; sourceTree = "<group>"; };
@@ -123,8 +127,17 @@
 				9B4BFF3F261F39C300CA003F /* FilteredActivity.swift */,
 				9B4BFF4E2620577800CA003F /* AllActivity.swift */,
 				9B4BFF4B26204BD900CA003F /* FilteredExerciseSate.swift */,
+				9B4BFF7E262769D800CA003F /* FilteredTextWeight.swift */,
+				9B4BFF81262908C700CA003F /* FilterKG.swift */,
 			);
 			path = Filters;
+			sourceTree = "<group>";
+		};
+		9B4BFF712626E4BD00CA003F /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		9BF5862C261017FB00C9ECAE = {
@@ -146,6 +159,7 @@
 		9BF58637261017FB00C9ECAE /* GOLift1.0 */ = {
 			isa = PBXGroup;
 			children = (
+				9B4BFF712626E4BD00CA003F /* Tests */,
 				9BF58638261017FB00C9ECAE /* GOLift1_0App.swift */,
 				9BF5863A261017FB00C9ECAE /* ContentView.swift */,
 				9B784EF526111A4D0016DC6E /* BodyMapView.swift */,
@@ -260,6 +274,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9B4BFF7F262769D800CA003F /* FilteredTextWeight.swift in Sources */,
 				9B4BFF3D261E2E2A00CA003F /* HistoryArrayValueTransformer.swift in Sources */,
 				9B4BFF2B261B70DC00CA003F /* Pager.swift in Sources */,
 				9B4BFF64262099AD00CA003F /* Feedback+CoreDataClass.swift in Sources */,
@@ -272,6 +287,7 @@
 				9B784EF626111A4D0016DC6E /* BodyMapView.swift in Sources */,
 				9B4BFF28261B6ADD00CA003F /* MotherView.swift in Sources */,
 				9B4BFF48261FD01D00CA003F /* FilteredUIView.swift in Sources */,
+				9B4BFF82262908C700CA003F /* FilterKG.swift in Sources */,
 				9B4BFF4C26204BD900CA003F /* FilteredExerciseSate.swift in Sources */,
 				9B4BFF5E262099AD00CA003F /* ExerciseState+CoreDataClass.swift in Sources */,
 				9BF5863B261017FB00C9ECAE /* ContentView.swift in Sources */,

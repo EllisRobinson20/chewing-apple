@@ -23,41 +23,51 @@ struct DynamicText: View {
     //this also means there may be no need for any direct return values to main ui)
     //Be careful setting view and helper seperately as each must be consistent eg class property cerrentRepMax has already been set
     //If it good for update? or does it need to wait for the filter to return first?
-    @State var currentRepMax = 3
+    @State var currentRepMax = 0
     @State var s = ""
+    @State var currentImprovementIndex = 0
     
     var body: some View {
         Text(String(s))
+            .onAppear() {
+                
+            }
         
         //Text(String(fetchRequest.wrappedValue.first?.exerciseName ?? "nill"))
     }
     
-    init(target: String, activityName: String, textNode: String) {
+    init(placeholder: String, target: String, textNode: String, historyContext: FetchedResults<History>, activityContext: Activity) {
         // get the most recent history relevant to exercise name and target
-        let historyResult = getLastHistory(filterExercise: activityName, filterTarget: target)
+        
         // This result needs to be converted to fetchedResult
-        var historyFetched: FetchedResults<History> {historyResult.wrappedValue}
+        
         // if it in nill
-        if historyResult.wrappedValue.isEmpty {
+        if historyContext.isEmpty {
             // set and get from activity (see notes)
             //num = historyResult.wrappedValue.first?.repsAchieved as! Int
-            let activityResult = getActivity(exerciseName: activityName)
-            if !activityResult.wrappedValue.isEmpty {
+            print("Activity name in DV.init() \(String(describing: activityContext.exerciseName))")
+            if activityContext.exerciseName != nil {
                 // Value for the view state
-                currentRepMax = Int(activityResult.wrappedValue.first?.oneRepMax ?? 0)
+                // Keep all the calculations local
+                currentRepMax = Int(activityContext.oneRepMax )
+                print("\(currentRepMax)")
                 // now update the improvement index with setActivityIndex
-                setActivityIndex(index: 0, exerciseName: activityName)
+                //!! Setting activity may need to be done in main ui eg set the helper then do a save context on the button presses
+                setActivityIndex(index: 0, activity: activityContext)
+               
             }
+            
+            
+            //
             // Now filter the blanks depending on the values ...
             // First get the static Target from targets.json
             let targetObj = getTargetObj(name: target)
             // Then get activity object with getActivityObject
-            let activityObject = getActivityObject(exerciseName: activityName)
+                //let activityObject = getActivityObject(exerciseName: activityName)
             // Dont forget to keep th state will with helper for DB to be able to read on rtn from the filter
             
             //Filter method is next NOTE: need variables that are in class level scope rather than local
-            s = filter(forNode: textNode, fetchedResults: historyFetched, currentActivity: activityObject, targetObj: targetObj!)
-
+            s = filter(forNode: textNode, currentHistory: historyContext, currentActivity: activityContext, targetObj: targetObj!)
         }
  //
         
@@ -70,27 +80,31 @@ struct DynamicText: View {
 //        fetchRequest = FetchRequest<Activity>(entity: Activity.entity(), sortDescriptors: [], predicate: NSPredicate(format: "exerciseName == %@", name ))
     }
     
-    func filter(forNode: String, fetchedResults: FetchedResults<History>, currentActivity: Activity, targetObj: Target) -> String {
+    func filter(forNode: String, currentHistory: FetchedResults<History>, currentActivity: Activity, targetObj: Target) -> String {
        var targetKG: Float = 0 //to class level
        var targetReps: Int = 0 // to class level
        var result = ""
        switch forNode {
        case "kg":
            // if rep max bigger than index
+        //Test for call from UI
+        print("kg called")
            if Int16(currentActivity.oneRepMax) > currentActivity.improvementIndex && currentActivity.improvementIndex > 0 {
                targetKG = currentActivity.oneRepMax * (Float(targetObj.oneRepMax[0])  / 100)
+            print("1.target kg set to : \(targetKG)")
            }else
            if currentActivity.improvementIndex >= Int16(currentActivity.oneRepMax) {
                targetKG = Float(currentActivity.improvementIndex) * (Float(targetObj.oneRepMax[0])  / 100)
+            print("2.target kg set to : \(targetKG)")
            }
            result = String(targetKG)
            break
        //if index bigger than rep max
        case "rep":
            // will need to check the history, newest entry of reps achieved
-           if fetchedResults.first != nil {
+        if  !currentHistory.isEmpty {
                print("Workout.swift: result not nil")
-               let nsObj = fetchedResults.first?.repsAchieved
+            let nsObj = currentHistory.first?.repsAchieved
                let arr1 = NSArray(objects: nsObj ?? NSArray())
                let objCArray = NSMutableArray(array: arr1)
                let swiftArray: [Int] = objCArray.compactMap({ $0 as? Int })
@@ -152,66 +166,15 @@ struct DynamicText: View {
            return false
        }
    }
-   
-   
-   
-    
-    
-    
-    //Get most recent and relevant history record
-    func getLastHistory(filterExercise: String, filterTarget: String) -> FetchRequest<History> {
-        let predicate1 = NSPredicate(format: "exerciseName == %@", "\(filterExercise)")
-        let predicate2 = NSPredicate(format: "targetName == %@", "\(filterTarget)")
-        let fetchHistory = FetchRequest<History>(entity: History.entity(), sortDescriptors: [
-            NSSortDescriptor(keyPath: \History.date, ascending: true)
-        ], predicate: NSCompoundPredicate(orPredicateWithSubpredicates: [predicate1,predicate2] ))
-        return fetchHistory
-    }
-    
-    func setActivityIndex(index: Int, exerciseName: String) {
+
+    func setActivityIndex(index: Int, activity: Activity) {
         // get the view/object context
-        let managedContext = PersistenceController.shared.container.viewContext
-        let fetchActivity:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Activity")
-        fetchActivity.predicate = NSPredicate(format: "exerciseName == %@", exerciseName )
-        //let fetchActivity = FetchRequest<Activity>(entity: Activity.entity(), sortDescriptors: [], predicate: NSPredicate(format: "exerciseName == %@", exerciseName ))
-        do {
-            let objectContext = try managedContext.fetch(fetchActivity)
-            
-            let activityUpdate = objectContext[0] as! NSManagedObject
-            activityUpdate.setValue(index, forKey: "improvementIndex")
-            // Double check this save !!!!!!
-            PersistenceController.shared.save()
-        } catch {
-            print(error)
-        }
-    }
-    
-    func getActivity(exerciseName: String)  -> FetchRequest<Activity>  {
-        
-        let fetchActivity = FetchRequest<Activity>(entity: Activity.entity(), sortDescriptors: [], predicate: NSPredicate(format: "exerciseName == %@", exerciseName ))
-        return fetchActivity
+        activity.setValue(index, forKey: "improvementIndex")
+        print("activity improvement index has been altered to: \(activity.improvementIndex)")
+        currentImprovementIndex = Int(activity.improvementIndex)
     }
     //
-    func getActivityObject(exerciseName: String) -> Activity {
-        // get the view/object context
-        var activityObject: NSManagedObject = Activity() as NSManagedObject
-        let managedContext = PersistenceController.shared.container.viewContext
-        let fetchActivity:NSFetchRequest<NSFetchRequestResult> = NSFetchRequest.init(entityName: "Activity")
-        fetchActivity.predicate = NSPredicate(format: "exerciseName == %@", exerciseName )
-        //let fetchActivity = FetchRequest<Activity>(entity: Activity.entity(), sortDescriptors: [], predicate: NSPredicate(format: "exerciseName == %@", exerciseName ))
-        do {
-            let objectContext = try managedContext.fetch(fetchActivity)
-            
-            activityObject = objectContext[0] as! NSManagedObject
-            
-            return activityObject as! Activity
-        } catch {
-            print(error)
-        }
-        return activityObject as! Activity
-    }
-    
-    
+   
     ///App data
     private mutating func getTargetObj(name: String) -> Target? {
         var targetObj: Target?
@@ -224,6 +187,7 @@ struct DynamicText: View {
     }
     
     
+  
     
     
 }

@@ -2,17 +2,57 @@
 import SwiftUI
 import CoreData
 
-
+class Status: ObservableObject {
+    @Published var currentExercise = 0
+    @Published var activityName = ""
+    //@Published var currentWeight: Float = 0.00
+    @Published var currentTarget = ""
+    @Published var targetIndex = 0
+    @Published var targetKG: Float = 0.00
+    
+    func getCurrentExercise() -> String {
+    activityName = helper.userSession[currentExercise]
+        return activityName
+    }
+    
+    ///App data
+    func getTargetObj(index: Int) -> Target? {
+        let targetObj: Target = AppData().targets.targetsList[index]
+        print("TESTING2: \(targetObj)")
+        return targetObj
+    }
+    func getCurrentReps(index: Int) -> Int {
+        let target = getTargetObj(index: index)
+        return (target?.repAmount.first) ?? 0
+    }
+    
+}
+var status = Status()
 struct ContentView: View {
-    @State var currentExercise = 1
+    @State var currentExercise = status.currentExercise
     @EnvironmentObject var viewRouter: ViewRouter
     @Environment(\.managedObjectContext) private var viewContext
+    
+    @FetchRequest(sortDescriptors: [], predicate: NSPredicate(format: "exerciseName == %@", status.getCurrentExercise()))
+    private var currentActivity: FetchedResults<Activity>
     
     @FetchRequest(sortDescriptors: [])
     private var activities: FetchedResults<Activity>
     
+    @FetchRequest(sortDescriptors: [], predicate: NSCompoundPredicate(orPredicateWithSubpredicates: [
+        NSPredicate(format: "exerciseName == %@", "\(status.getCurrentExercise())"),
+        NSPredicate(format: "targetName == %@", "\(status.currentTarget)")
+    ] ))
+    private var currentHistory: FetchedResults<History>
+    
     
     @StateObject var appData = AppData()
+    
+    let targets = ["Strength", "Power", "Volume", "Endurance" ]
+    
+    func roundToNearestQuarter(num : Float) -> Float {
+        return round(num * 4.0)/4.0
+    }
 
     /// Get exercise targets
     func getTargets() -> [String] {
@@ -46,18 +86,14 @@ struct ContentView: View {
             // if not update and give message "your rep max has gone up by X"
         //after this method call the view needs to update depending on which target was picked
         // so here there needs to be some state managment
-        var activityList = [" "]
-        activityList.removeAll()
-        for activity in activities {
+        
             // !This for loop forcing the each activity USE new Filter
-            if activity.exerciseName == chosenExercise {
-                activityList.append(chosenExercise)
-            }
-        }
+            
+        
         
         
             let oneRepMax = maxKG / (1.0278 - 0.0278 * Float(repsCount) )
-        if  activityList.contains(chosenExercise) {
+        if  currentActivity.first?.exerciseName == chosenExercise {
                 print("Setting existing activity")
                 for activity in activities {
                     print("Has Activities")
@@ -79,7 +115,8 @@ struct ContentView: View {
                 estTenRepKG(repMax: oneRepMax, activity: newActivity)
                 }
             }
-        
+        //status.currentWeight = currentActivity.
+        self.refreshUI()
     }
     
     func estTenRepKG(repMax: Float, activity: Activity) {
@@ -107,11 +144,22 @@ struct ContentView: View {
         return res
     }
     
+    func refreshUI() {
+        status.currentTarget = self.targets[currentTarget]
+        // not sure if needed !!!! status.currentWeight = status.targetKG !!!!!
+        // Add all the components that should refresh
+        self.filter(forNode: "kg", currentHistory: currentHistory, currentActivity: currentActivity.first!,  target: self.targets[currentTarget])
+        
+        print("DEBUGG : \(currentWeight) AND ALSO : \(status.targetKG)")
+    }
+    
     //
     
     @State private var currentTarget = 0
-    @State private var currentWeight = 0
-    @State private var targetRepetitions = 0
+    @State private var currentWeight =  status.targetKG
+    @State private var targetRepetitions = status.getCurrentReps(index: status.targetIndex)
+    
+    
     
     func explosiveRButton() -> String {
         if self.currentTarget == 0 {
@@ -137,7 +185,15 @@ struct ContentView: View {
         }
         return "circle.fill"
     }
-       
+     
+    func incrementPrecisely(incrementUp: Bool, incrementAmount: Float) {
+        if incrementUp {
+            currentWeight += incrementAmount
+        }
+        else if !incrementUp && currentWeight > 0 {
+            currentWeight -= incrementAmount
+        }
+    }
     func increment(incrementUp: Bool, controlName: String) {
         if incrementUp && controlName == "weight" {
             currentWeight += 1
@@ -145,7 +201,7 @@ struct ContentView: View {
         else if !incrementUp && currentWeight > 0 && controlName == "weight" {
             currentWeight -= 1
         }
-        else if incrementUp && targetRepetitions < 16 && controlName == "reps" {
+        else if incrementUp && targetRepetitions < 30 && controlName == "reps" {
             targetRepetitions += 1
         }
         else if !incrementUp && targetRepetitions > 0 && controlName == "reps" {
@@ -157,24 +213,31 @@ struct ContentView: View {
     }
     
     
-    func getCurrentWeight() -> String {
-        let targets = self.getTargets()
-        var workout = Workout()
-        // Modify the current target first using workout.targetView()
-        let weightToLift = workout.targetView(target: targets[currentTarget], activityName: helper.userSession[currentExercise], textNode: "kg")
-        if !weightToLift.isEmpty {
-            currentWeight = Int(weightToLift)!
-        }
-        return String(currentWeight)
-    }
+    
     
     var body: some View {
         
-        let targets = self.getTargets()
+        var targets = self.getTargets()
+        
 //        DynamicText(filterKey: "exerciseName", filterValue: helper.userSession[currentExercise]) { (activity: Activity) in
 //            Text("\(activity.exerciseName ?? "")\(activity.oneRepMax)")
 //        }
-        DynamicText(target: targets[currentTarget], activityName: "standing squat", textNode: "kg")
+        
+        //DynamicText(target: targets[currentTarget], activityName: "standing squat", textNode: "kg")
+        
+          Text("")
+//        Text("\(currentHistory.first?.targetName ?? "None")")
+//        DynamicText(placeholder: "Please enter a rep max", target: "Strength", textNode: "kg", historyContext: currentHistory, activityContext: currentActivity.first!)
+        Text("\(roundToNearestQuarter(num: status.targetKG)  ) kg")
+            .onAppear() {
+                self.refreshUI()
+            }
+            .onChange(of: status.targetKG) { newValue in
+                self.refreshUI()
+            }
+       // TextField("Test field: ", text: String($targetKG))
+            
+        
         Spacer()
         HStack{
             /// Back Button: Content View
@@ -196,24 +259,28 @@ struct ContentView: View {
             HStack{
                 Button(action: {
                     currentTarget = 0
+                    self.refreshUI()
                 }
                 ) {
                     Image(systemName: explosiveRButton())
                 }
                 Button(action: {
                     currentTarget = 1
+                    self.refreshUI()
                 }
                 ) {
                     Image(systemName: speedRButton())
                 }
                 Button(action: {
                     currentTarget = 2
+                    self.refreshUI()
                 }
                 ) {
                     Image(systemName: strengthRButton())
                 }
                 Button(action: {
                     currentTarget = 3
+                    self.refreshUI()
                 }
                 ) {
                     Image(systemName: powerRButton())
@@ -234,20 +301,47 @@ struct ContentView: View {
             Spacer()
             // Weight to Lift
             HStack{
-                Button(action: {increment(incrementUp: false, controlName: "weight")}) { Image(systemName: "chevron.backward") }
-                Text("\(self.currentWeight)")
+                Button(action: {
+                   
+                }) { Image(systemName: "chevron.backward")
+                    
+                    .onTapGesture(count: 2) {
+                        incrementPrecisely(incrementUp: false, incrementAmount: 0.25)
+                    }
+                    .onTapGesture(count: 1) {
+                        increment(incrementUp: false, controlName: "weight")
+                }
+                    .onLongPressGesture(minimumDuration:0.5) {
+                        incrementPrecisely(incrementUp: false, incrementAmount: 10.00)
+                    }
+                    
+                
+                }
+                Text("\(String(format: "%.2f", roundToNearestQuarter(num: currentWeight) ))")
                     .font(.largeTitle)
                     .bold()
             
                 Text("kg")
-                Button(action: {increment(incrementUp: true, controlName: "weight")}) { Image(systemName: "chevron.forward")}
+                Button(action: {
+                    
+                }) { Image(systemName: "chevron.forward")
+                    .onTapGesture(count: 2) {
+                        incrementPrecisely(incrementUp: true, incrementAmount: 0.25)
+                    }
+                    .onTapGesture(count: 1) {
+                        increment(incrementUp: true, controlName: "weight")
+                    }
+                    .onLongPressGesture(minimumDuration:0.5) {
+                        incrementPrecisely(incrementUp: true, incrementAmount: 10.00)
+                    }
+                }
             }
             .scaleEffect(2)
             .padding(.vertical)
             // Repetitions
             HStack{
                 Button(action: {increment(incrementUp: false, controlName: "reps")}) { Image(systemName: "chevron.backward")}
-                Text("\(self.targetRepetitions)")
+                Text("\(targetRepetitions)")
                     .font(.largeTitle)
                     .bold()
                 Text("reps")
@@ -290,7 +384,7 @@ struct ContentView: View {
                     
                 }
                 .buttonStyle(SecondaryButtonStyle())
-                Button(action: {self.setRepMax(chosenExercise: helper.userSession[currentExercise], maxKG:  Float(self.currentWeight), repsCount: self.targetRepetitions )})
+                Button(action: {self.setRepMax(chosenExercise: helper.userSession[currentExercise], maxKG:  Float(currentWeight), repsCount: self.targetRepetitions )})
                 {
                     Text("REP\nMAX")
                         .multilineTextAlignment(.center)
@@ -301,10 +395,204 @@ struct ContentView: View {
             .scaleEffect(0.7)
             Spacer()
         }.onAppear() {
-            
+           // targets = self.getTargets()
         }
         
     }
+    
+    //
+    //
+    //
+    
+    
+    @State var currentRepMax = 0
+    @State var s = ""
+    @State var currentImprovementIndex = 0
+    
+    
+//    var body: some View {
+//        Text(String(s))
+//            .onAppear() {
+//
+//            }
+//
+//        //Text(String(fetchRequest.wrappedValue.first?.exerciseName ?? "nill"))
+//    }
+    
+   
+    
+     func filter(forNode: String, currentHistory: FetchedResults<History>, currentActivity: Activity, target: String){
+        print("filter called")
+       let targetObj = getTargetObj(name: target)
+        
+        //to class level
+       var targetReps: Int = 0 // to class level
+       var result = ""
+        //
+        //
+        //
+        if currentHistory.isEmpty {
+            // set and get from activity (see notes)
+            //num = historyResult.wrappedValue.first?.repsAchieved as! Int
+            print("Activity name in DV.init() \(String(describing: currentActivity.exerciseName))")
+            if currentActivity.exerciseName != nil {
+                // Value for the view state
+                // Keep all the calculations local
+                currentRepMax = Int(currentActivity.oneRepMax )
+                print("\(currentRepMax)")
+                // now update the improvement index with setActivityIndex
+                //!! Setting activity may need to be done in main ui eg set the helper then do a save context on the button presses
+                setActivityIndex(index: 0, activity: currentActivity)
+               
+            }
+            
+            
+            //
+            // Now filter the blanks depending on the values ...
+            // First get the static Target from targets.json
+            
+                    //let targetObj = getTargetObj(name: target)
+            
+            // Then get activity object with getActivityObject
+                //let activityObject = getActivityObject(exerciseName: activityName)
+            // Dont forget to keep th state will with helper for DB to be able to read on rtn from the filter
+            
+            //Filter method is next NOTE: need variables that are in class level scope rather than local
+            
+        }
+        
+        //
+        //
+        //
+        
+        
+        
+        
+        
+        
+        
+        
+       switch forNode {
+       case "kg":
+           // if rep max bigger than index
+        //Test for call from UI
+        print("kg called")
+        
+        //This code should not call the improvement index to make a comparison
+        // It should be the history, though we are saying here that history is nill so will never
+        // run ...
+//           if Int16(currentActivity.oneRepMax) > currentActivity.improvementIndex && currentActivity.improvementIndex > 0 {
+//            targetKG = currentActivity.oneRepMax * (Float(targetObj?.oneRepMax[0] ?? 0)  / 100)
+//            print("1.target kg set to : \(targetKG)")
+//           }else
+//           if currentActivity.improvementIndex >= Int16(currentActivity.oneRepMax) {
+//            targetKG = Float(currentActivity.improvementIndex) * (Float(targetObj?.oneRepMax[0] ?? 0)  / 100)
+//            print("2.target kg set to : \(targetKG)")
+//           }else
+        
+           if currentActivity.oneRepMax >= 0 {
+            status.targetKG = currentActivity.oneRepMax * (Float(targetObj?.oneRepMax[0] ?? 0)  / 100)
+            currentWeight = currentActivity.oneRepMax * (Float(targetObj?.oneRepMax[0] ?? 0)  / 100)
+            targetRepetitions = status.getCurrentReps(index: currentTarget)
+           }
+        result = String(status.targetKG)
+        
+           break
+       //if index bigger than rep max
+       case "rep":
+           // will need to check the history, newest entry of reps achieved
+        if  !currentHistory.isEmpty {
+               print("Workout.swift: result not nil")
+            let nsObj = currentHistory.first?.repsAchieved
+               let arr1 = NSArray(objects: nsObj ?? NSArray())
+               let objCArray = NSMutableArray(array: arr1)
+               let swiftArray: [Int] = objCArray.compactMap({ $0 as? Int })
+               targetReps = getSuggestedRepCount(array: swiftArray)
+               print("The array to print: \(swiftArray)")
+               // need to get that rep counter and from that transformable
+               
+           } else {
+               print("Workout.swift: result is nil")
+            targetReps = targetObj?.targetSets[0] ?? 0
+           }
+           result = String(targetReps)
+           break
+       //get a median and the highest and the lowest - if the median is lower than 50% low to high
+       //use median - if median is 50% or higher than the low to high range - then use highest figure
+       // an even median would mean taking two middle numbers doing a+b/2
+       //ALSO if no history then will have to assume the middle of the suggested target (filtered) weight
+       case "setcount":
+//to class level with total sales current speed interval timemax
+        let totalSets = targetObj?.targetSets[1]
+        result = String(totalSets ?? 0)
+           break
+       case "speed":
+        let currentSpeed = targetObj?.speed
+        result = String(currentSpeed ?? "Nill Value")
+           break
+       case "interval":
+        let intervalTimeMax = targetObj?.interval[1]
+        result = String(intervalTimeMax ?? 0)
+           break
+       default:
+           break
+       }
+       //return result
+   }
+   
+   func getSuggestedRepCount(array: [Int]) -> Int {
+       let result: Int
+       let median: Int
+       let arraySize = array.count
+       let sortedArray = array.sorted()
+       if isEven(number: arraySize) && arraySize > 0 { // check bigger than zero for crash operators below
+           median = Int((Double(arraySize)*0.5)+1)
+       } else {
+           median = Int((Double(arraySize)*0.5)+0.5)
+       }
+       if array[median] > sortedArray.last! - sortedArray.first! {
+           result = sortedArray.last!
+       } else {
+           result = array[median]
+       }
+       return result
+   }
+   // will need an overide of the getsuggested reps function for when the weight gets changed and the suggested rep count can change with the weight count
+   func isEven(number: Int) -> Bool {
+       if number % 2 == 0 {
+           return true
+       } else {
+           return false
+       }
+   }
+
+    func setActivityIndex(index: Int, activity: Activity) {
+        // get the view/object context
+        activity.setValue(index, forKey: "improvementIndex")
+        print("activity improvement index has been altered to: \(activity.improvementIndex)")
+        currentImprovementIndex = Int(activity.improvementIndex)
+    }
+    //
+   
+    ///App data
+    private func getTargetObj(name: String) -> Target? {
+        var targetObj: Target?
+        for target in AppData().targets.targetsList {
+            if target.targetName == name {
+                targetObj = target
+            }
+        }
+        return targetObj
+    }
+    
+    
+  
+    
+    
+    
+    
+    
+    
 }
 
 

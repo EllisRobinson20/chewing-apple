@@ -1,15 +1,24 @@
+//
+//  FilteredTextWeight.swift
+//  GOLift1.0
+//
+//  Created by L EE on 14/04/2021.
+//
 
-
-import CoreData
 import SwiftUI
+import CoreData
 
-struct AllActivity {
+struct FilteredTextWeight {
+   
+    
+   
     
     var activity = [Activity]()
     // filtering the hitory list dynamically
     init() {
         
         let f  = NSFetchRequest<NSFetchRequestResult>(entityName: "Activity")
+        f.predicate = NSPredicate(format: "exerciseName == %@", "standing squat")
         do {
             activity = try PersistenceController.shared.container.viewContext.fetch(f) as! Array<Activity>
         }
@@ -20,3 +29,5 @@ struct AllActivity {
         return activity
     }
 }
+
+
