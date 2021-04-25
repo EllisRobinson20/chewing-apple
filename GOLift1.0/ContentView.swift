@@ -9,11 +9,16 @@ class Status: ObservableObject {
     @Published var currentTarget = ""
     @Published var targetIndex = 0
     @Published var targetKG: Float = 0.00
+    @Published var currentSet: Int = 1
+    
+    @Published var repsAchieved: [Int] = [-1]
+    @Published var weightAchieved: [Float] = [-1]
     
     func getCurrentExercise() -> String {
     activityName = helper.userSession[currentExercise]
         return activityName
     }
+    
     
     ///App data
     func getTargetObj(index: Int) -> Target? {
@@ -23,13 +28,20 @@ class Status: ObservableObject {
     }
     func getCurrentReps(index: Int) -> Int {
         let target = getTargetObj(index: index)
-        return (target?.repAmount.first) ?? 0
+        return (target?.repAmount.last) ?? 0 // .first for lower rep range .last for upper range suggestion
+    }
+    func getSetsRange(index: Int) -> [Int] {
+        let target = getTargetObj(index: index)
+        return target?.targetSets ?? [0,0]
     }
     
 }
 var status = Status()
 struct ContentView: View {
     @State var currentExercise = status.currentExercise
+    @State var currentSet = status.currentSet
+    @State var setsRange = status.getSetsRange(index: status.targetIndex )
+    
     @EnvironmentObject var viewRouter: ViewRouter
     @Environment(\.managedObjectContext) private var viewContext
     
@@ -39,11 +51,13 @@ struct ContentView: View {
     @FetchRequest(sortDescriptors: [])
     private var activities: FetchedResults<Activity>
     
-    @FetchRequest(sortDescriptors: [], predicate: NSCompoundPredicate(orPredicateWithSubpredicates: [
+    @FetchRequest(sortDescriptors: [
+        NSSortDescriptor(keyPath: \History.date, ascending: false)
+    ], predicate: NSCompoundPredicate(orPredicateWithSubpredicates: [
         NSPredicate(format: "exerciseName == %@", "\(status.getCurrentExercise())"),
         NSPredicate(format: "targetName == %@", "\(status.currentTarget)")
     ] ))
-    private var currentHistory: FetchedResults<History>
+    private var lastHistory: FetchedResults<History>
     
     
     @StateObject var appData = AppData()
@@ -148,7 +162,7 @@ struct ContentView: View {
         status.currentTarget = self.targets[currentTarget]
         // not sure if needed !!!! status.currentWeight = status.targetKG !!!!!
         // Add all the components that should refresh
-        self.filter(forNode: "kg", currentHistory: currentHistory, currentActivity: currentActivity.first!,  target: self.targets[currentTarget])
+        self.filter(forNode: "kg", lastHistory: lastHistory, currentActivity: currentActivity.first!,  target: self.targets[currentTarget])
         
         print("DEBUGG : \(currentWeight) AND ALSO : \(status.targetKG)")
     }
@@ -157,8 +171,7 @@ struct ContentView: View {
     
     @State private var currentTarget = 0
     @State private var currentWeight =  status.targetKG
-    @State private var targetRepetitions = status.getCurrentReps(index: status.targetIndex)
-    
+    @State private var targetRepetitions = status.getCurrentReps(index: status.targetIndex)//may need to change to currentTarget
     
     
     func explosiveRButton() -> String {
@@ -226,8 +239,8 @@ struct ContentView: View {
         //DynamicText(target: targets[currentTarget], activityName: "standing squat", textNode: "kg")
         
           Text("")
-//        Text("\(currentHistory.first?.targetName ?? "None")")
-//        DynamicText(placeholder: "Please enter a rep max", target: "Strength", textNode: "kg", historyContext: currentHistory, activityContext: currentActivity.first!)
+//        Text("\(lasttHistory.first?.targetName ?? "None")")
+//        DynamicText(placeholder: "Please enter a rep max", target: "Strength", textNode: "kg", historyContext: lastHistory, activityContext: currentActivity.first!)
         Text("\(roundToNearestQuarter(num: status.targetKG)  ) kg")
             .onAppear() {
                 self.refreshUI()
@@ -348,7 +361,7 @@ struct ContentView: View {
                 Button(action: {increment(incrementUp: true, controlName: "reps")}) { Image(systemName: "chevron.forward")}
             }
             .padding(.bottom)
-            Text("set 1 : 3")
+            Text("set \(currentSet) : \(setsRange[1])")
                 .font(.largeTitle)
                 .bold()
             Spacer()
@@ -373,7 +386,10 @@ struct ContentView: View {
                 }
                 .buttonStyle(SecondaryButtonStyle())
                 //.scaleEffect(0.7)
-                Button(action:{}){
+                Button(action:{
+                    logRecord()
+                    incrementSession()
+                }){
                     
                     Image(systemName: "forward.end.alt")
                         .resizable()
@@ -395,7 +411,8 @@ struct ContentView: View {
             .scaleEffect(0.7)
             Spacer()
         }.onAppear() {
-           // targets = self.getTargets()
+            setsRange = status.getSetsRange(index: currentTarget )
+            //clearRecords()
         }
         
     }
@@ -421,17 +438,18 @@ struct ContentView: View {
     
    
     
-     func filter(forNode: String, currentHistory: FetchedResults<History>, currentActivity: Activity, target: String){
+     func filter(forNode: String, lastHistory: FetchedResults<History>, currentActivity: Activity, target: String){
         print("filter called")
-       let targetObj = getTargetObj(name: target)
-        
+        let targetObj = getTargetObj(name: target)
+        //Set the current sets range on filter action
+        setsRange = status.getSetsRange(index: currentTarget )
         //to class level
        var targetReps: Int = 0 // to class level
        var result = ""
         //
         //
         //
-        if currentHistory.isEmpty {
+        if lastHistory.isEmpty {
             // set and get from activity (see notes)
             //num = historyResult.wrappedValue.first?.repsAchieved as! Int
             print("Activity name in DV.init() \(String(describing: currentActivity.exerciseName))")
@@ -494,6 +512,7 @@ struct ContentView: View {
             status.targetKG = currentActivity.oneRepMax * (Float(targetObj?.oneRepMax[0] ?? 0)  / 100)
             currentWeight = currentActivity.oneRepMax * (Float(targetObj?.oneRepMax[0] ?? 0)  / 100)
             targetRepetitions = status.getCurrentReps(index: currentTarget)
+            
            }
         result = String(status.targetKG)
         
@@ -501,9 +520,9 @@ struct ContentView: View {
        //if index bigger than rep max
        case "rep":
            // will need to check the history, newest entry of reps achieved
-        if  !currentHistory.isEmpty {
+        if  !lastHistory.isEmpty {
                print("Workout.swift: result not nil")
-            let nsObj = currentHistory.first?.repsAchieved
+            let nsObj = lastHistory.first?.repsAchieved
                let arr1 = NSArray(objects: nsObj ?? NSArray())
                let objCArray = NSMutableArray(array: arr1)
                let swiftArray: [Int] = objCArray.compactMap({ $0 as? Int })
@@ -585,10 +604,135 @@ struct ContentView: View {
         return targetObj
     }
     
+    /// History
+    func newHistoryRecord() -> History {
+        let newRecord = History(context: viewContext)
+        newRecord.date = Date()
+        newRecord.exerciseName = helper.userSession[currentExercise]
+        newRecord.targetName = targets[currentTarget]
+        return newRecord
+    }
+    func clearRecords() {
+        print("clearing all records")
+        status.repsAchieved.removeAll()//clear arrays
+        status.weightAchieved.removeAll()
+        status.repsAchieved.append(-1)
+        status.weightAchieved.append(-1)
+        print("\(status.weightAchieved)")
+    }
+    func recordIsCleared() -> Bool {
+        print(status.repsAchieved.first == -1 && status.weightAchieved.first == -1.0)
+        print(status.repsAchieved.first)
+        print(status.weightAchieved.first)
+        return status.repsAchieved.first == -1 && status.weightAchieved.first == -1.0
+    }
+
+    func logRecord() {
+        
+        
+        if (recordIsCleared()) {
+            print("new record required ... initialising arrays")
+            status.repsAchieved.removeAll()
+            status.weightAchieved.removeAll()
+            print("... \(status.weightAchieved)")
+            print("CV.logRecord: Creating new History record")
+            // Add a rep count to an array first to pass in here
+            status.repsAchieved.append(targetRepetitions)
+            status.weightAchieved.append(currentWeight)
+            print("... \(status.weightAchieved)")
+            let newRecord = newHistoryRecord()
+            newRecord.repsAchieved = NSMutableArray(array: status.repsAchieved)
+            newRecord.weightsAchieved = NSMutableArray(array: status.weightAchieved)
+            saveDB()
+            // Increment called from the button also
+            
+        } else {
+            updateRepsRecord()
+            // same proccess for the weight achieved
+            updateWeightsRecord()
+            
+        }
+        
+        // now when the newHostory date is full - get last history and update that
+        //make sure the arrays do not fill more than the number of sets and weights achieved
+    }
+    func incrementSession() {
+        //here will test the state of the sets and exercises before deciding what to increment
+        if (stillHasExercises() && stillHasSets()) { // and current reps less than targetreps[1]
+            // then increment sets only
+            print("Incrementer: current set + 1")
+            currentSet += 1
+        } else
+        if (stillHasExercises() && !stillHasSets()) { 
+            print("Incrementer: To the next exercise ... ")
+            // current set back to 1
+            currentSet = 1
+            // currentExercise +1
+            currentExercise += 1
+            //dont forget to make the testers -1 again when go to next exercise and on game finish
+            clearRecords()
+        } else
+        if (!stillHasExercises() && stillHasSets()) {
+            print("Incrementer: Incrementing last exercise - current set + 1")
+            //increment only sets
+            currentSet += 1
+        } else
+        if (!stillHasExercises() && !stillHasSets()) {
+            print("Incrementer: no more exercises or sets")
+            //end of session
+            // reset currentSet to 1
+            currentSet = 1
+            // reset currentExercise to1
+            currentExercise = 1
+            clearRecords()
+        }
+        
+    }
+    func stillHasExercises() -> Bool {
+        print("\(currentExercise+1) + \(helper.userSession.count)")
+        print((currentExercise+1) < helper.userSession.count)
+        return (currentExercise+1) < helper.userSession.count
+    }
+    func stillHasSets() -> Bool {
+        print("\(status.repsAchieved.count) + \(setsRange[1])")
+        print(status.repsAchieved.count < setsRange[1])
+        return status.repsAchieved.count < setsRange[1]
+    }
     
-  
-    
-    
+    func updateRepsRecord() {
+        if (!lastHistory.isEmpty) {
+        print("updating record: \(String(describing: lastHistory.first?.date)) \(lastHistory.first?.exerciseName)")
+        print("current array values for Reps: \(String(describing: lastHistory.first?.repsAchieved))")
+        
+        var swiftArray: [Int] = lastHistory.first?.repsAchieved as! [Int]
+        print("swiftArray Pre Values: \(swiftArray)")
+        swiftArray.append(targetRepetitions)
+        //swiftArray.append(targetRepetitions)
+        print("swift array post values: \(swiftArray)")
+        //now save the data to the same record
+        lastHistory.first?.repsAchieved = NSMutableArray(array: swiftArray)
+        saveDB()
+        print("values after save for Reps: \(String(describing: lastHistory.first?.repsAchieved))")
+            //add to the array in status or will not affect ui when changinh sets values
+            status.repsAchieved.append(targetRepetitions)
+    }
+    }
+    func updateWeightsRecord() {
+        if (!lastHistory.isEmpty) {
+        print("updating record: \(String(describing: lastHistory.first?.date)) \(lastHistory.first?.exerciseName)")
+        print("current array values for Weight: \(String(describing: lastHistory.first?.weightsAchieved))")
+        var swiftArray: [Float] = lastHistory.first?.weightsAchieved as! [Float]
+        print("swift array pre values: \(swiftArray)")
+        swiftArray.append(currentWeight)
+        print("swift array post values: \(swiftArray)")
+        //now save the data to the same record
+        lastHistory.first?.weightsAchieved = NSMutableArray(array: swiftArray)
+        saveDB()
+        print("values after save for Weight: \(String(describing: lastHistory.first?.weightsAchieved))")
+            //add to the array in status or will not affect ui when changinh sets values
+            status.weightAchieved.append(currentWeight)
+    }
+    }
     
     
     

@@ -124,6 +124,7 @@ struct BodyMapView: View {
             && checkStateMainView(name: exercise.name)
             {
                 helper.userSession.append(exercise.name)
+                print("added \(exercise.name)")
             }
         }
         print(helper.userSession)
