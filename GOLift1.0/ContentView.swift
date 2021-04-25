@@ -391,13 +391,12 @@ struct ContentView: View {
                     incrementSession()
                 }){
                     
-                    Image(systemName: "forward.end.alt")
+                    Image(systemName: isLastLap() ? "stop" : "forward.end.alt")
                         .resizable()
                         .scaledToFit()
-                        .padding(.vertical)
-                        .scaleEffect(0.75)
-                    //Text(" Next")
-                    
+                        .padding(.vertical, isLastLap() ? -2 : 17)
+                        .animation(/*@START_MENU_TOKEN@*/.easeIn/*@END_MENU_TOKEN@*/)
+                        .scaleEffect(isLastLap() ? 0.45 : 0.75)
                 }
                 .buttonStyle(SecondaryButtonStyle())
                 Button(action: {self.setRepMax(chosenExercise: helper.userSession[currentExercise], maxKG:  Float(currentWeight), repsCount: self.targetRepetitions )})
@@ -685,6 +684,7 @@ struct ContentView: View {
             // reset currentExercise to1
             currentExercise = 1
             clearRecords()
+            viewRouter.currentPage = .page1
         }
         
     }
@@ -697,6 +697,12 @@ struct ContentView: View {
         print("\(status.repsAchieved.count) + \(setsRange[1])")
         print(status.repsAchieved.count < setsRange[1])
         return status.repsAchieved.count < setsRange[1]
+    }
+    func isLastLap()  -> Bool {
+        // last lap if no exercises and current sets is one less than total sets
+        print("Testing for last lap: \(!stillHasExercises() ) + \((status.repsAchieved.count+1 == setsRange[1]))")
+        let isLast = !stillHasExercises() && (status.repsAchieved.count+1 == setsRange[1])
+        return isLast
     }
     
     func updateRepsRecord() {

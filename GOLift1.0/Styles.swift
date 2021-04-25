@@ -47,6 +47,12 @@ struct DemoButtonStyle: ButtonStyle {
             .foregroundColor(configuration.isPressed ? Color.gray : Color.yellow)
     }
 }
+struct FFWDButtonStyle: ButtonStyle {
+    func makeBody(configuration: Self.Configuration) -> some View {
+        configuration.label
+            .foregroundColor(configuration.isPressed ? Color.gray : Color.yellow)
+    }
+}
 struct OptionsButtonStyle: ButtonStyle {
     func makeBody(configuration: Self.Configuration) -> some View {
         configuration.label
@@ -100,4 +106,5 @@ struct CheckboxToggleStyle: ToggleStyle {
         }
     }
 }
+
 

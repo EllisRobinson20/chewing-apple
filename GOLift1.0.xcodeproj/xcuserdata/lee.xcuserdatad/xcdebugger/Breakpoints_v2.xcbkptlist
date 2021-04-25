@@ -46,8 +46,8 @@
             filePath = "GOLift1.0/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "645"
-            endingLineNumber = "645"
+            startingLineNumber = "644"
+            endingLineNumber = "644"
             landmarkName = "logRecord()"
             landmarkType = "7">
          </BreakpointContent>
