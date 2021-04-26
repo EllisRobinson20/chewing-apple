@@ -20,6 +20,11 @@ struct BodyMapView: View {
     //user Data
     @FetchRequest(sortDescriptors: [])
     private var exerciseDB: FetchedResults<ExerciseState>
+    @FetchRequest(sortDescriptors: [
+        NSSortDescriptor(keyPath: \History.date, ascending: false)
+    ])
+    private var historyDB: FetchedResults<History>
+    
     /// Create body map
     func bodyMap() -> SCNScene {
         
@@ -37,10 +42,10 @@ struct BodyMapView: View {
         let abs = (subScene3?.rootNode.childNode(withName: "body_high_002", recursively: true))!
         let quads = (subScene4?.rootNode.childNode(withName: "body_high_001", recursively: true))!
         //add color
-        pectoral.geometry?.firstMaterial?.diffuse.contents = UIColor.red
-        biceps.geometry?.firstMaterial?.diffuse.contents = UIColor.orange
-        abs.geometry?.firstMaterial?.diffuse.contents = UIColor.green
-        quads.geometry?.firstMaterial?.diffuse.contents = UIColor.red
+        //pectoral.geometry?.firstMaterial?.diffuse.contents = paintBodyPart(bodypartname: "Pectorals")
+        //biceps.geometry?.firstMaterial?.diffuse.contents = paintBodyPart(bodypartname: "Biceps")
+        //abs.geometry?.firstMaterial?.diffuse.contents = paintBodyPart(bodypartname: "Abdominals")
+        //quads.geometry?.firstMaterial?.diffuse.contents = paintBodyPart(bodypartname: "Quadriceps")
         //raise the profile of the muscles laying over the frame
         pectoral.position.z = 1.0
         biceps.position.z = 1.0
@@ -66,6 +71,24 @@ struct BodyMapView: View {
         VStack{
             SceneView(scene: scene, options: [ ])
                 .frame(width: UIScreen.main.bounds.width , height: UIScreen.main.bounds.height * 0.5)
+                .onAppear() {
+                    let materialB = SCNMaterial()
+                    materialB.diffuse.contents = paintBodyPart(bodypartname: "Biceps")
+                    let biceps = scene.rootNode.childNode(withName: "body_high_004", recursively: true)
+                    biceps?.geometry?.replaceMaterial(at: 0, with: materialB)
+                    let materialP = SCNMaterial()
+                    materialP.diffuse.contents = paintBodyPart(bodypartname: "Pectorals")
+                    let pectorals = scene.rootNode.childNode(withName: "body_high_003", recursively: true)
+                    pectorals?.geometry?.replaceMaterial(at: 0, with: materialP)
+                    let materialA = SCNMaterial()
+                    materialA.diffuse.contents = paintBodyPart(bodypartname: "Abdominals")
+                    let abdominals = scene.rootNode.childNode(withName: "body_high_002", recursively: true)
+                    abdominals?.geometry?.replaceMaterial(at: 0, with: materialA)
+                    let materialQ = SCNMaterial()
+                    materialQ.diffuse.contents = paintBodyPart(bodypartname: "Quadriceps")
+                    let quadriceps = scene.rootNode.childNode(withName: "body_high_001", recursively: true)
+                    quadriceps?.geometry?.replaceMaterial(at: 0, with: materialQ)
+                }
             VStack
             {
                 Text(localHelper.muscleName)
@@ -101,6 +124,9 @@ struct BodyMapView: View {
             Spacer(minLength: 0)
         }
         }
+        .onAppear() {
+            setColor()
+        }
     }
     func checkStateMainView(name: String) -> Bool {
         var bool: Bool?
@@ -129,8 +155,179 @@ struct BodyMapView: View {
         }
         print(helper.userSession)
     }
-}
+    
+    
+    func setColor() {
+        let now = Date()
+        var latestRecords = [String:Date?]()
+        
+        // for i in muslce names
+        // for h in history
+        // for i in appdata.exercises
+        // if h.name
+        
+        //..get neareast history where history.exname == app getMatchingRecordName(history.exname) -> String {loop the appdata()exercises.json}
+        // for each muscle name - get the most recent record
+        
+       // while (latestRecords.count <= historyDB.count && historyDB.first?.exerciseName != nil) {
+            var counters = [0,0,0,0]
+            var obj : Exercise
+            for h in historyDB {
+                print("Running")
+                obj = getMatchingJSONObject(recordName: h.exerciseName!)
+                print("obj resistance index: \(obj.resistanceIndex) + name: \(obj.name)")
+                print("checking array size: \(obj.resistanceIndex.count) + last array value: \(obj.resistanceIndex.last)")
+                if (obj.resistanceIndex.first! > obj.resistanceIndex[1] &&
+                        obj.resistanceIndex.first! > obj.resistanceIndex[2] &&
+                        obj.resistanceIndex.first! > obj.resistanceIndex[3] &&
+                        counters[0] != -1
+                ) {
+                    latestRecords.updateValue(h.date, forKey: "Biceps")
+                    counters.insert(-1, at: 0)
+                    print("attempting to add \(String(describing: h.date))")
+                } else
+                if (obj.resistanceIndex[1] > obj.resistanceIndex[0] &&
+                    obj.resistanceIndex[1] > obj.resistanceIndex[2] &&
+                    obj.resistanceIndex[1] > obj.resistanceIndex[3] &&
+                        counters[1] != -1
+                ) {
+                    latestRecords.updateValue(h.date, forKey: "Pectorals")
+                    counters.insert(-1, at: 1)
+                    print("attempting to add \(String(describing: h.date))")
+                }else
+                if (obj.resistanceIndex[2] > obj.resistanceIndex[0] &&
+                    obj.resistanceIndex[2] > obj.resistanceIndex[1] &&
+                    obj.resistanceIndex[2] > obj.resistanceIndex[3] &&
+                        counters[2] != -1
+                ) {
+                    latestRecords.updateValue(h.date, forKey: "Abdominals")
+                    counters.insert(-1, at: 2)
+                    print("attempting to add \(String(describing: h.date))")
+                }else
+                if (obj.resistanceIndex[3] > obj.resistanceIndex[0] &&
+                    obj.resistanceIndex[3] > obj.resistanceIndex[1] &&
+                    obj.resistanceIndex[3] > obj.resistanceIndex[2] &&
+                        counters[3] != -1
+                ) {
+                    latestRecords.updateValue(h.date, forKey: "Quadriceps")
+                    counters.insert(-1, at: 3)
+                    print("attempting to add \(String(describing: h.date))")
+                }
+            }
+        
+        
+        var times = [Double]()
+        for record in latestRecords {
+            //if record.
+            var time = getElapsedTime(fromDate: now, toDate: record.value!)
+            print("testing for time \(getElapsedTime(fromDate: now, toDate: record.value!)) key \(record.key)")
+            time *= -1 // Negative time value
+            time /= 3600 // seconds to hours
+            times.append(time)
+            helper.muscleDictionary.updateValue(time, forKey: record.key)
+            
+        }
+        print(times)
+        // time elapsed between array 0 and now
+        
+        // time elapsed between array 1 and now
+        // time elapsed between array 2 and now
+        // time elapsed between array 3 and now
+        
+        // store the times elsaped somehow (say in helper) and check time
+        
+        //elspsed against some enum or dictionary for the right color
+    }
+    func getMatchingJSONObject(recordName: String) -> Exercise {
+        var ex: [Exercise] = appData.exercises.exerciseList
+        for exercise in appData.exercises.exerciseList {
+            if recordName == exercise.name {
+                ex.removeAll()
+                ex.append(exercise)
+            }
+        }
+        return ex.first!
+    }
+    
+    func getElapsedTime(fromDate: Date, toDate: Date) -> TimeInterval {
+        return toDate.timeIntervalSince(fromDate)
+    }
 
+
+func paintBodyPart(bodypartname:String) -> UIColor {
+    let timeElapsed = helper.muscleDictionary[bodypartname]
+    var red = CGFloat(0.0)
+    var green = CGFloat(0.0)
+    var blue = CGFloat(0.0)
+    var alpha = CGFloat(0.0)
+    print("print body part called. Time elapsed value: \(String(describing: timeElapsed))")
+    // if less than 24 hours
+    if (timeElapsed ?? 145 < 24) {
+        //red
+        print("Value is Red")
+        
+        //var newColor = UIColor(red: 0.88, green: 0.02, blue: 0.00, alpha: 1.00)
+        red = 0.88
+        green = 0.02
+        blue = 0.00
+        alpha = 1.00
+        
+    } else // if more than 24 hours but less than 48 hours
+    if (timeElapsed ?? 145 > 24 && timeElapsed ?? 145 < 48) {
+        //opaque 50% red
+        print("Value is Red")
+        //color = UIColor(red: 0.88, green: 0.02, blue: 0.00, alpha: 0.50)
+        red = 0.88
+        green = 0.02
+        blue = 0.00
+        alpha = 0.50
+        
+    } else // if more than 48 but less than 72
+    if (timeElapsed ?? 145 > 48 && timeElapsed ?? 145 < 72) {
+        // amber / orange
+        print("Value is Orange")
+        //color = UIColor(red: 1.00, green: 0.78, blue: 0.00, alpha: 1.00)
+        red = 1.00
+        green = 0.78
+        blue = 0.00
+        alpha = 1.00
+        
+    } else // if more than 72 but less than 144
+    if (timeElapsed ?? 145 > 72 && timeElapsed ?? 145 < 144) {
+        // green
+        print("Value is Green")
+        //color = UIColor(red: 0.28, green: 0.89, blue: 0.19, alpha: 1.00)
+        red = 0.28
+        green = 0.89
+        blue = 0.19
+        alpha = 1.00
+        
+        
+    } else // if more than 144
+    if (timeElapsed ?? 0 > 144) {
+       //default colour
+        print("Value is Gray")
+        //color = UIColor(red: 0.50, green: 0.50, blue: 0.50, alpha: 1.00)
+        red = 0.50
+        green = 0.50
+        blue = 0.50
+        alpha = 1.00
+        
+    } else
+    if (timeElapsed == nil) {
+        print("Value is Default Grey")
+        red = 0.50
+        green = 0.50
+        blue = 0.50
+        alpha = 1.00
+    }
+
+    print("Actual Value: \(red) : \(green) : \(blue)")
+    return UIColor(red: red, green: green, blue: blue, alpha: alpha)
+    
+    
+}
+}
 struct BodyMapView_Previews: PreviewProvider {
     static var previews: some View {
         BodyMapView()
@@ -242,6 +439,7 @@ class Helper: ObservableObject {
     @FetchRequest(sortDescriptors: [])
     private var exerciseDB: FetchedResults<ExerciseState>
     @Published var userSession = ["Create a session first"]
+    @Published var muscleDictionary: Dictionary<String, Double> = [:]
     
     func clearSession() {
         userSession.removeAll()
@@ -275,6 +473,10 @@ class Helper: ObservableObject {
         }
         return bool!
     }
+    
+    
+    
+    
 }
 //Handles options view
 struct FullScreenModalView: View {
