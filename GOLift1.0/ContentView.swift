@@ -162,7 +162,7 @@ struct ContentView: View {
         status.currentTarget = self.targets[currentTarget]
         // not sure if needed !!!! status.currentWeight = status.targetKG !!!!!
         // Add all the components that should refresh
-        self.filter(forNode: "kg", lastHistory: lastHistory, currentActivity: currentActivity.first!,  target: self.targets[currentTarget])
+        self.filter(forNode: "kg", lastHistory: lastHistory, currentActivity: currentActivity.first ?? Activity(context: viewContext),  target: self.targets[currentTarget])
         
         print("DEBUGG : \(currentWeight) AND ALSO : \(status.targetKG)")
     }
@@ -230,7 +230,7 @@ struct ContentView: View {
     
     var body: some View {
         
-        var targets = self.getTargets()
+        let targets = self.getTargets()
         
 //        DynamicText(filterKey: "exerciseName", filterValue: helper.userSession[currentExercise]) { (activity: Activity) in
 //            Text("\(activity.exerciseName ?? "")\(activity.oneRepMax)")

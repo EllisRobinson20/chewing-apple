@@ -107,5 +107,84 @@ struct CheckboxToggleStyle: ToggleStyle {
     }
 }
 
+extension Color {
+    func paint(name: String) -> Color {
+        let timeElapsed = helper.muscleDictionary[name]
+        var red = CGFloat(0.0)
+        var green = CGFloat(0.0)
+        var blue = CGFloat(0.0)
+        var alpha = CGFloat(0.0)
+        print("print body part called. Time elapsed value: \(String(describing: timeElapsed))")
+        // if less than 24 hours
+        if (timeElapsed ?? 145 < 24) {
+            //red
+            print("Value is Red")
+            
+            //var newColor = UIColor(red: 0.88, green: 0.02, blue: 0.00, alpha: 1.00)
+            red = 0.88
+            green = 0.02
+            blue = 0.00
+            alpha = 1.00
+            
+        } else // if more than 24 hours but less than 48 hours
+        if (timeElapsed ?? 145 > 24 && timeElapsed ?? 145 < 48) {
+            //opaque 50% red
+            print("Value is Red")
+            //color = UIColor(red: 0.88, green: 0.02, blue: 0.00, alpha: 0.50)
+            red = 0.88
+            green = 0.02
+            blue = 0.00
+            alpha = 0.50
+            
+        } else // if more than 48 but less than 72
+        if (timeElapsed ?? 145 > 48 && timeElapsed ?? 145 < 72) {
+            // amber / orange
+            print("Value is Orange")
+            //color = UIColor(red: 1.00, green: 0.78, blue: 0.00, alpha: 1.00)
+            red = 1.00
+            green = 0.78
+            blue = 0.00
+            alpha = 1.00
+            
+        } else // if more than 72 but less than 144
+        if (timeElapsed ?? 145 > 72 && timeElapsed ?? 145 < 144) {
+            // green
+            print("Value is Green")
+            //color = UIColor(red: 0.28, green: 0.89, blue: 0.19, alpha: 1.00)
+            red = 0.28
+            green = 0.89
+            blue = 0.19
+            alpha = 1.00
+            
+            
+        } else // if more than 144
+        if (timeElapsed ?? 0 > 144) {
+           //default colour
+            print("Value is Gray")
+            //color = UIColor(red: 0.50, green: 0.50, blue: 0.50, alpha: 1.00)
+            red = 0.50
+            green = 0.50
+            blue = 0.50
+            alpha = 1.00
+            
+        } else
+        if (timeElapsed == nil) {
+            print("Value is Default Grey")
+            red = 0.50
+            green = 0.50
+            blue = 0.50
+            alpha = 1.00
+        }
+
+        print("Actual Value: \(red) : \(green) : \(blue)")
+        
+        return Color(UIColor(red: red, green: green, blue: blue, alpha: alpha))
+    }
+}
+
+
+   
+    
+    
 
 

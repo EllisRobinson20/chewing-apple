@@ -41,11 +41,6 @@ struct BodyMapView: View {
         let biceps = (subScene2?.rootNode.childNode(withName: "body_high_004", recursively: true))!
         let abs = (subScene3?.rootNode.childNode(withName: "body_high_002", recursively: true))!
         let quads = (subScene4?.rootNode.childNode(withName: "body_high_001", recursively: true))!
-        //add color
-        //pectoral.geometry?.firstMaterial?.diffuse.contents = paintBodyPart(bodypartname: "Pectorals")
-        //biceps.geometry?.firstMaterial?.diffuse.contents = paintBodyPart(bodypartname: "Biceps")
-        //abs.geometry?.firstMaterial?.diffuse.contents = paintBodyPart(bodypartname: "Abdominals")
-        //quads.geometry?.firstMaterial?.diffuse.contents = paintBodyPart(bodypartname: "Quadriceps")
         //raise the profile of the muscles laying over the frame
         pectoral.position.z = 1.0
         biceps.position.z = 1.0
@@ -55,7 +50,6 @@ struct BodyMapView: View {
         let bodyMaterial = SCNMaterial()
         bodyMaterial.diffuse.contents = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0)
         body.geometry?.materials = [bodyMaterial]
-        
         scene?.rootNode.addChildNode(pectoral)
         scene?.rootNode.addChildNode(biceps)
         scene?.rootNode.addChildNode(abs)
@@ -344,18 +338,18 @@ struct SceneView: UIViewRepresentable {
         // Instantiate the SCNView and setup the scene
         view.scene = scene
         view.pointOfView = scene.rootNode.childNode(withName: "camera", recursively: true)
-        view.allowsCameraControl = false
-        
-        
+        view.allowsCameraControl = true
         // Add gesture recognizer
         let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(context.coordinator.handleTap(_:)))
         view.addGestureRecognizer(tapGesture)
-        
         return view
     }
     
     func updateUIView(_ view: SCNView, context: Context) {
-        //
+        //Code aims to overlay a HUD ...
+//        let Lscene = SKScene()
+//        Lscene.backgroundColor = UIColor(displayP3Red: 0.5, green: 0.5, blue: 0.5, alpha: 0.5)
+//        view.overlaySKScene = Lscene
     }
     
     func makeCoordinator() -> Coordinator {
@@ -391,19 +385,18 @@ struct SceneView: UIViewRepresentable {
                 SCNTransaction.completionBlock = {
                     SCNTransaction.begin()
                     SCNTransaction.animationDuration = 0.5
-                    
                     material.emission.contents = UIColor.black
-                  
                     SCNTransaction.commit()
                 }
-                material.emission.contents = UIColor.gray
+                material.emission.contents = UIColor.blue
             
                 SCNTransaction.commit()
                 
                 //change the state of which body part pressed
                 
                 if result.node.name == "body_high_003" {
-                    helper.muscleName = "Pectorals"
+                    helper.muscleName =
+                        "Pectorals"
                 } else
                 if result.node.name == "body_high_004" {
                     helper.muscleName =
@@ -492,6 +485,11 @@ struct FullScreenModalView: View {
     private var activitiesDB: FetchedResults<Activity>
     @FetchRequest(sortDescriptors: [])
     private var exerciseDB: FetchedResults<ExerciseState>
+    @FetchRequest(sortDescriptors: [
+        NSSortDescriptor(keyPath: \History.date, ascending: false)
+    ])
+    private var historyDB: FetchedResults<History>
+    
     
     func changeState(name: String) {
         for exercise in exerciseDB {
@@ -537,7 +535,35 @@ struct FullScreenModalView: View {
                                     }
                             }
                             if showDropdown {
-                                            Text("Hello World!")
+                                HStack {
+                                    ZStack {
+                                        Circle()
+                                            .fill(Color.green)
+                                    }
+                                    .frame(maxWidth:18, alignment: .leading)
+                                    .padding(.vertical)
+                                    VStack(alignment: .leading) {
+                                        Text("One Rep Max: \(roundToNearestQuarter(num: getRepMax(exerciseName: exercise.name)))") 
+                                    }
+                                    Spacer()
+                                }
+                                HStack {
+                                    ZStack {
+                                        Circle()
+                                            .fill(Color.green)
+                                    }
+                                    .frame(maxWidth:18, alignment: .leading)
+                                    .padding(.vertical)
+                                    VStack(alignment: .leading) {
+                                        // Text("\(getLastDate(exerciseName: exercise.name))")
+                                         Text("\(hasHistory(exerciseName: exercise.name) ? "Last Exercised: \(getLastDate(exerciseName: exercise.name))" : "")")
+                                       
+                                    }
+                                    Spacer()
+                                }
+                                
+                                
+                                
                                         }
                         }
                     }
@@ -553,7 +579,48 @@ struct FullScreenModalView: View {
             .onAppear() {/*chosenExercisesDictionary = createMutableForExercise()*/}
         }
     }
+    func roundToNearestQuarter(num : Float) -> Float {
+        return round(num * 4.0)/4.0
+    }
     
+    func getRepMax(exerciseName: String) -> Float {
+        var result = Float()
+        for activity in activitiesDB {
+            if (activity.exerciseName == exerciseName) {
+                result = activity.oneRepMax
+            }
+        }
+        return result
+    }
+    func getLastDate(exerciseName: String) -> String {
+        var date = Date()
+        for history in historyDB {
+            if (history.exerciseName == exerciseName) {
+                date = history.date ?? Date(timeIntervalSince1970: 0)
+            }
+        }
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
+         
+        
+         
+        // US English Locale (en_UK)
+        dateFormatter.locale = Locale(identifier: "en_UK")
+        let dateAsString = dateFormatter.string(from: date)
+        
+        return dateAsString
+    }
+    func hasHistory(exerciseName: String) -> Bool {
+        var bool = false
+        for history in historyDB {
+            if (history.exerciseName == exerciseName) {
+                bool = true
+            }
+        }
+        return bool
+    }
     
     func addExercise(name: String) {
        //to array
