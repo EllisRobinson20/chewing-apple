@@ -88,10 +88,6 @@ struct ContentView: View {
     }
 //
     func setRepMax(chosenExercise: String, maxKG: Float, repsCount: Int) {
-       
-//        let targets = self.getTargets()
-//        let activityResult = FilteredActivity(filterExercise: helper.userSession[currentExercise], filterTarget: targets[currentTarget])
-//            .get()
         
         // calc the rep max on chosen activity
         // check activites db for previous entries
@@ -104,8 +100,7 @@ struct ContentView: View {
             // !This for loop forcing the each activity USE new Filter
             
         
-        
-        
+    
             let oneRepMax = maxKG / (1.0278 - 0.0278 * Float(repsCount) )
         if  currentActivity.first?.exerciseName == chosenExercise {
                 print("Setting existing activity")
@@ -225,18 +220,22 @@ struct ContentView: View {
         return true
     }
     
-    
+    func checkRepMaxIsSet() -> Bool {
+        return currentActivity.first?.oneRepMax != nil
+    }
     
     
     var body: some View {
         let targets = self.getTargets()
-        Text("\(roundToNearestQuarter(num: status.targetKG)  ) kg")
+        Spacer()
+        Text("\(checkRepMaxIsSet() ? "" : "\(helper.userSession[currentExercise])"  )")
             .onAppear() {
                 self.refreshUI()
             }
             .onChange(of: status.targetKG) { newValue in
                 self.refreshUI()
             }
+            .foregroundColor(Color.red)
         Spacer()
         HStack{
             /// Back Button: Content View
