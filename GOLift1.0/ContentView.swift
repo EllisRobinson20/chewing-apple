@@ -229,18 +229,7 @@ struct ContentView: View {
     
     
     var body: some View {
-        
         let targets = self.getTargets()
-        
-//        DynamicText(filterKey: "exerciseName", filterValue: helper.userSession[currentExercise]) { (activity: Activity) in
-//            Text("\(activity.exerciseName ?? "")\(activity.oneRepMax)")
-//        }
-        
-        //DynamicText(target: targets[currentTarget], activityName: "standing squat", textNode: "kg")
-        
-          Text("")
-//        Text("\(lasttHistory.first?.targetName ?? "None")")
-//        DynamicText(placeholder: "Please enter a rep max", target: "Strength", textNode: "kg", historyContext: lastHistory, activityContext: currentActivity.first!)
         Text("\(roundToNearestQuarter(num: status.targetKG)  ) kg")
             .onAppear() {
                 self.refreshUI()
@@ -248,9 +237,6 @@ struct ContentView: View {
             .onChange(of: status.targetKG) { newValue in
                 self.refreshUI()
             }
-       // TextField("Test field: ", text: String($targetKG))
-            
-        
         Spacer()
         HStack{
             /// Back Button: Content View
@@ -263,7 +249,6 @@ struct ContentView: View {
             }.padding()
             Spacer()
         }
-        
         VStack {
             /// Target selection
             Text("\(targets[currentTarget])")
@@ -662,7 +647,7 @@ struct ContentView: View {
             print("Incrementer: current set + 1")
             currentSet += 1
         } else
-        if (stillHasExercises() && !stillHasSets()) { 
+        if (stillHasExercises() && !stillHasSets()) {
             print("Incrementer: To the next exercise ... ")
             // current set back to 1
             currentSet = 1
@@ -744,5 +729,4 @@ struct ContentView: View {
     
     
 }
-
 

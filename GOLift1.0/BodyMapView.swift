@@ -543,7 +543,8 @@ struct FullScreenModalView: View {
                                     .frame(maxWidth:18, alignment: .leading)
                                     .padding(.vertical)
                                     VStack(alignment: .leading) {
-                                        Text("One Rep Max: \(roundToNearestQuarter(num: getRepMax(exerciseName: exercise.name)))") 
+                                        
+                                        Text("One Rep Max: \(String(format: "%.2f", roundToNearestQuarter(num: getRepMax(exerciseName: exercise.name)) ))Kg")
                                     }
                                     Spacer()
                                 }
