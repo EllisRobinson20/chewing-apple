@@ -8,6 +8,7 @@ struct GOLift1_0App: App {
     
     @StateObject var viewRouter = ViewRouter()
     @StateObject var appData = AppData()
+    var isReset = false
 
     var exerciseState = FilteredExerciseState().get()
     var allActivities = AllActivity().get()
@@ -29,6 +30,7 @@ struct GOLift1_0App: App {
     }
     //
     func initDB() {
+        if !isReset {
         //condition that if activities exsist then do not init
         print("Initialising DB ... ")
         for e in exerciseState {
@@ -40,6 +42,9 @@ struct GOLift1_0App: App {
             print("Exercise States Already Added")
         }
         //
+        } else {
+            resetExerciseState()
+        }
     }
     func resetExerciseState() {
         if !exerciseState.isEmpty {
@@ -55,8 +60,6 @@ struct GOLift1_0App: App {
     ///Main Body
     var body: some Scene {
         WindowGroup {
-            
-            
             MotherView().environmentObject(viewRouter)
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
             .environmentObject(appData)

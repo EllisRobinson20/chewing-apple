@@ -14,16 +14,36 @@ class Status: ObservableObject {
     @Published var repsAchieved: [Int] = [-1]
     @Published var weightAchieved: [Float] = [-1]
     
+    @Published var changesAreConfimed = false
+    @Published var show = false
+    
+    func hideModal() {
+        show = false
+    }
+    func clearSessionArrays() {
+        repsAchieved.removeAll()
+        weightAchieved.removeAll()
+        currentSet = 1
+        currentExercise = 0
+    }
+    
     func getCurrentExercise() -> String {
     activityName = helper.userSession[currentExercise]
         return activityName
+    }
+    
+    func deleteLast() {
+        if repsAchieved.count > 0 {
+            repsAchieved.removeLast()
+            weightAchieved.removeLast()
+        }
     }
     
     
     ///App data
     func getTargetObj(index: Int) -> Target? {
         let targetObj: Target = AppData().targets.targetsList[index]
-        print("TESTING2: \(targetObj)")
+        print("TESTING TARGET OBJECT: \(targetObj)")
         return targetObj
     }
     func getCurrentReps(index: Int) -> Int {
@@ -165,11 +185,15 @@ struct ContentView: View {
     //
     
     @State private var currentTarget = 0
+    @State private var lastTarget = 0
     @State private var currentWeight =  status.targetKG
     @State private var targetRepetitions = status.getCurrentReps(index: status.targetIndex)//may need to change to currentTarget
+    @State private var show = status.show
+    
     
     
     func explosiveRButton() -> String {
+        // if rep count
         if self.currentTarget == 0 {
             return "circle"
         }
@@ -226,9 +250,11 @@ struct ContentView: View {
     
     
     var body: some View {
+        ZStack {
+            VStack {
         let targets = self.getTargets()
         Spacer()
-        Text("\(checkRepMaxIsSet() ? "" : "\(helper.userSession[currentExercise])"  )")
+        Text("\(checkRepMaxIsSet() ? "" : "\(helper.userSession[currentExercise])")")
             .onAppear() {
                 self.refreshUI()
             }
@@ -255,29 +281,53 @@ struct ContentView: View {
                 .foregroundColor(.secondary)
             HStack{
                 Button(action: {
+                    lastTarget = currentTarget
                     currentTarget = 0
-                    self.refreshUI()
+                    
+                    if currentSet > 1 || currentExercise > 0 {
+                        self.show.toggle()
+                    } else{
+                        self.refreshUI()
+                    }
                 }
                 ) {
                     Image(systemName: explosiveRButton())
                 }
                 Button(action: {
+                    lastTarget = currentTarget
                     currentTarget = 1
-                    self.refreshUI()
+                    
+                    if currentSet > 1 || currentExercise > 0 {
+                        self.show.toggle()
+                    } else{
+                        self.refreshUI()
+                    }
                 }
                 ) {
                     Image(systemName: speedRButton())
                 }
                 Button(action: {
+                    lastTarget = currentTarget
                     currentTarget = 2
-                    self.refreshUI()
+                    
+                    if currentSet > 1 || currentExercise > 0 {
+                        self.show.toggle()
+                    } else{
+                        self.refreshUI()
+                    }
                 }
                 ) {
                     Image(systemName: strengthRButton())
                 }
                 Button(action: {
+                    lastTarget = currentTarget
                     currentTarget = 3
-                    self.refreshUI()
+                    
+                    if currentSet > 1 || currentExercise > 0 {
+                        self.show.toggle()
+                    } else{
+                        self.refreshUI()
+                    }
                 }
                 ) {
                     Image(systemName: powerRButton())
@@ -299,7 +349,6 @@ struct ContentView: View {
             // Weight to Lift
             HStack{
                 Button(action: {
-                   
                 }) { Image(systemName: "chevron.backward")
                     
                     .onTapGesture(count: 2) {
@@ -358,7 +407,15 @@ struct ContentView: View {
                             .scaleEffect()
                 }
                 .buttonStyle(DemoButtonStyle())
-                Button(action:{}){
+                Button(action:{
+                    status.deleteLast()
+                        if currentSet > 1
+                            {currentSet -= 1}
+                    if currentSet == 1 && currentExercise > 0 {
+                        show.toggle()
+                    }
+                        self.refreshUI()
+                }){
                     
                     Image(systemName: "backward.end.alt")
                         .resizable()
@@ -397,29 +454,62 @@ struct ContentView: View {
             setsRange = status.getSetsRange(index: currentTarget )
             //clearRecords()
         }
+        }
+            if self.show{
+                GeometryReader{_ in
+                    VStack(alignment: .center, spacing: 20) {
+                        Text("changing targets or sets at this stage\n will reset the session.\n pressing continue will remove any sets you just lifted ")
+                            .multilineTextAlignment(.center)
+                            .padding()
+                        HStack {
+                            Button(action: {
+                                currentTarget = lastTarget
+                                status.changesAreConfimed = false
+                                self.show.toggle()
+                            }) {
+                                Text("cancel")
+                            }.padding()
+                            Spacer()
+                            Button(action: {
+                                status.clearSessionArrays()
+                                status.changesAreConfimed = true
+                                self.show.toggle()
+                                currentSet = 1
+                                currentExercise = 0
+                                self.refreshUI()
+                            }) {
+                                Text("confirm")
+                            }.padding()
+                        }
+                    }
+                    .background(Color.white)
+                    .cornerRadius(15)
+                }
+                .padding(50.0)
+                .padding(.top, 60.0)
+                .background(
+                    Color.black.opacity(0.65)
+                        .edgesIgnoringSafeArea(.all)
+                        .onTapGesture {
+                            withAnimation{
+                                self.show.toggle()
+                            }
+                        }
+                
+                )
+            }
+            
+        }
         
     }
     
-    //
-    //
-    //
     
-    
+    //
+    //
+    //
     @State var currentRepMax = 0
     @State var s = ""
     @State var currentImprovementIndex = 0
-    
-    
-//    var body: some View {
-//        Text(String(s))
-//            .onAppear() {
-//
-//            }
-//
-//        //Text(String(fetchRequest.wrappedValue.first?.exerciseName ?? "nill"))
-//    }
-    
-   
     
      func filter(forNode: String, lastHistory: FetchedResults<History>, currentActivity: Activity, target: String){
         print("filter called")
@@ -428,13 +518,8 @@ struct ContentView: View {
         setsRange = status.getSetsRange(index: currentTarget )
         //to class level
        var targetReps: Int = 0 // to class level
-       var result = ""
-        //
-        //
-        //
+       var result = String()
         if lastHistory.isEmpty {
-            // set and get from activity (see notes)
-            //num = historyResult.wrappedValue.first?.repsAchieved as! Int
             print("Activity name in DV.init() \(String(describing: currentActivity.exerciseName))")
             if currentActivity.exerciseName != nil {
                 // Value for the view state
@@ -444,61 +529,18 @@ struct ContentView: View {
                 // now update the improvement index with setActivityIndex
                 //!! Setting activity may need to be done in main ui eg set the helper then do a save context on the button presses
                 setActivityIndex(index: 0, activity: currentActivity)
-               
             }
-            
-            
-            //
-            // Now filter the blanks depending on the values ...
-            // First get the static Target from targets.json
-            
-                    //let targetObj = getTargetObj(name: target)
-            
-            // Then get activity object with getActivityObject
-                //let activityObject = getActivityObject(exerciseName: activityName)
-            // Dont forget to keep th state will with helper for DB to be able to read on rtn from the filter
-            
-            //Filter method is next NOTE: need variables that are in class level scope rather than local
-            
         }
-        
-        //
-        //
-        //
-        
-        
-        
-        
-        
-        
-        
-        
        switch forNode {
        case "kg":
-           // if rep max bigger than index
-        //Test for call from UI
         print("kg called")
-        
-        //This code should not call the improvement index to make a comparison
-        // It should be the history, though we are saying here that history is nill so will never
-        // run ...
-//           if Int16(currentActivity.oneRepMax) > currentActivity.improvementIndex && currentActivity.improvementIndex > 0 {
-//            targetKG = currentActivity.oneRepMax * (Float(targetObj?.oneRepMax[0] ?? 0)  / 100)
-//            print("1.target kg set to : \(targetKG)")
-//           }else
-//           if currentActivity.improvementIndex >= Int16(currentActivity.oneRepMax) {
-//            targetKG = Float(currentActivity.improvementIndex) * (Float(targetObj?.oneRepMax[0] ?? 0)  / 100)
-//            print("2.target kg set to : \(targetKG)")
-//           }else
-        
+        // if rep max bigger than index
            if currentActivity.oneRepMax >= 0 {
             status.targetKG = currentActivity.oneRepMax * (Float(targetObj?.oneRepMax[0] ?? 0)  / 100)
             currentWeight = currentActivity.oneRepMax * (Float(targetObj?.oneRepMax[0] ?? 0)  / 100)
             targetRepetitions = status.getCurrentReps(index: currentTarget)
-            
            }
         result = String(status.targetKG)
-        
            break
        //if index bigger than rep max
        case "rep":
@@ -611,8 +653,6 @@ struct ContentView: View {
     }
 
     func logRecord() {
-        
-        
         if (recordIsCleared()) {
             print("new record required ... initialising arrays")
             status.repsAchieved.removeAll()
@@ -684,7 +724,7 @@ struct ContentView: View {
     }
     func isLastLap()  -> Bool {
         // last lap if no exercises and current sets is one less than total sets
-        print("Testing for last lap: \(!stillHasExercises() ) + \((status.repsAchieved.count+1 == setsRange[1]))")
+        print("Testing for last lap: \(!stillHasExercises() ) + Is reps equal to set Range \((status.repsAchieved.count+1 == setsRange[1]))")
         let isLast = !stillHasExercises() && (status.repsAchieved.count+1 == setsRange[1])
         return isLast
     }
@@ -724,8 +764,10 @@ struct ContentView: View {
     }
     }
     
-    
-    
-    
+
 }
+
+////
+
+
 

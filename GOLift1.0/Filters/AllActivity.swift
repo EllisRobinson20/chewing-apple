@@ -6,7 +6,6 @@ import SwiftUI
 struct AllActivity {
     
     var activity = [Activity]()
-    // filtering the hitory list dynamically
     init() {
         
         let f  = NSFetchRequest<NSFetchRequestResult>(entityName: "Activity")
@@ -17,6 +16,7 @@ struct AllActivity {
         }
     }
     func get() -> [Activity] {
+        print("VALUES RETURNED FROM AllActivity: \(activity)")
         return activity
     }
 }

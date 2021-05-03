@@ -167,9 +167,9 @@ struct BodyMapView: View {
             var counters = [0,0,0,0]
             var obj : Exercise
             for h in historyDB {
-                print("Running")
+                print("Running ...")
                 obj = getMatchingJSONObject(recordName: h.exerciseName!)
-                print("obj resistance index: \(obj.resistanceIndex) + name: \(obj.name)")
+                print("History: obj resistance index: \(obj.resistanceIndex) + name: \(obj.name)")
                 print("checking array size: \(obj.resistanceIndex.count) + last array value: \(obj.resistanceIndex.last)")
                 if (obj.resistanceIndex.first! > obj.resistanceIndex[1] &&
                         obj.resistanceIndex.first! > obj.resistanceIndex[2] &&
@@ -208,8 +208,6 @@ struct BodyMapView: View {
                     print("attempting to add \(String(describing: h.date))")
                 }
             }
-        
-        
         var times = [Double]()
         for record in latestRecords {
             //if record.
@@ -260,7 +258,7 @@ func paintBodyPart(bodypartname:String) -> UIColor {
         //red
         print("Value is Red")
         
-        //var newColor = UIColor(red: 0.88, green: 0.02, blue: 0.00, alpha: 1.00)
+        //var color = UIColor(red: 0.88, green: 0.02, blue: 0.00, alpha: 1.00)
         red = 0.88
         green = 0.02
         blue = 0.00
@@ -422,7 +420,7 @@ struct SceneView: UIViewRepresentable {
 class Helper: ObservableObject {
     // app data
     @EnvironmentObject var appData: AppData
-    @Published var muscleName: String = "Choose a Workout"
+    @Published var muscleName: String = "Tap Body to Choose Workout"
     @Published var optionsButtonName: String = ""
     @Published var optionsActive: Bool = false
     @Published var buttonBorders: CGFloat = 0
@@ -551,14 +549,12 @@ struct FullScreenModalView: View {
                                 HStack {
                                     ZStack {
                                         Circle()
-                                            .fill(Color.green)
+                                            .fill(hasHistory(exerciseName: exercise.name) ? Color.green : Color.clear )
                                     }
                                     .frame(maxWidth:18, alignment: .leading)
                                     .padding(.vertical)
                                     VStack(alignment: .leading) {
-                                        // Text("\(getLastDate(exerciseName: exercise.name))")
                                          Text("\(hasHistory(exerciseName: exercise.name) ? "Last Exercised: \(getLastDate(exerciseName: exercise.name))" : "")")
-                                       
                                     }
                                     Spacer()
                                 }
@@ -577,7 +573,7 @@ struct FullScreenModalView: View {
             }, trailing: Toggle("", isOn: $showDropdown)
                                     .toggleStyle(ChevronToggleStyle())
                                     .labelsHidden() )
-            .onAppear() {/*chosenExercisesDictionary = createMutableForExercise()*/}
+            .onAppear() {helper.userSession.removeAll()}
         }
     }
     func roundToNearestQuarter(num : Float) -> Float {

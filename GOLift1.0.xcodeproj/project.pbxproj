@@ -43,6 +43,7 @@
 		9B784F0C26131E120016DC6E /* model.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 9B784F0B26131E120016DC6E /* model.scnassets */; };
 		9BB570E026163C660008B3F8 /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB570DF26163C660008B3F8 /* Styles.swift */; };
 		9BB5712A26166A5E0008B3F8 /* Data.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9BB5712826166A5E0008B3F8 /* Data.xcdatamodeld */; };
+		9BD40E8E263D4DEB00E83CB1 /* ConfirmChangesModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BD40E8D263D4DEB00E83CB1 /* ConfirmChangesModal.swift */; };
 		9BF58639261017FB00C9ECAE /* GOLift1_0App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF58638261017FB00C9ECAE /* GOLift1_0App.swift */; };
 		9BF5863B261017FB00C9ECAE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BF5863A261017FB00C9ECAE /* ContentView.swift */; };
 		9BF5863D261017FC00C9ECAE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9BF5863C261017FC00C9ECAE /* Assets.xcassets */; };
@@ -86,6 +87,7 @@
 		9B784F0B26131E120016DC6E /* model.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = model.scnassets; sourceTree = "<group>"; };
 		9BB570DF26163C660008B3F8 /* Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
 		9BB5712926166A5E0008B3F8 /* Activity.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Activity.xcdatamodel; sourceTree = "<group>"; };
+		9BD40E8D263D4DEB00E83CB1 /* ConfirmChangesModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmChangesModal.swift; sourceTree = "<group>"; };
 		9BF58635261017FB00C9ECAE /* GOLift1.0.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GOLift1.0.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BF58638261017FB00C9ECAE /* GOLift1_0App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GOLift1_0App.swift; sourceTree = "<group>"; };
 		9BF5863A261017FB00C9ECAE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 				9BF58638261017FB00C9ECAE /* GOLift1_0App.swift */,
 				9BF5863A261017FB00C9ECAE /* ContentView.swift */,
 				9B784EF526111A4D0016DC6E /* BodyMapView.swift */,
+				9BD40E8D263D4DEB00E83CB1 /* ConfirmChangesModal.swift */,
 				9B4BFF56262099AD00CA003F /* ExerciseState+CoreDataClass.swift */,
 				9B4BFF57262099AD00CA003F /* ExerciseState+CoreDataProperties.swift */,
 				9B4BFF58262099AD00CA003F /* Activity+CoreDataClass.swift */,
@@ -303,6 +306,7 @@
 				9B47FABB2618EEC400E1A2D2 /* Exercises.swift in Sources */,
 				9B47FAB22618EBAB00E1A2D2 /* Exercise.swift in Sources */,
 				9B47FAC12618F1BF00E1A2D2 /* Targets.swift in Sources */,
+				9BD40E8E263D4DEB00E83CB1 /* ConfirmChangesModal.swift in Sources */,
 				9B4BFF62262099AD00CA003F /* History+CoreDataClass.swift in Sources */,
 				9B4BFF65262099AD00CA003F /* Feedback+CoreDataProperties.swift in Sources */,
 				9B4BFF37261BCFEB00CA003F /* Workout.swift in Sources */,
